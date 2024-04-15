@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+</head>
+<body>
+<h1>Upload Image</h1>
+<form action="ImageLoader.php" method="post" enctype="multipart/form-data">
+    <label for="component_id">Component ID:</label>
+    <input type="number" name="component_id" id="component_id" required><br><br>
+    <label for="image_file">Choose Image:</label>
+    <input type="file" name="image_file" id="image_file" required><br><br>
+
+    <input type="submit" value="Upload">
+</form>
+</body>
+</html>
+

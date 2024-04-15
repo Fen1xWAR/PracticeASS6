@@ -23,7 +23,7 @@ echo '<nav class="navbar bg-primary navbar-expand-lg navbar-dark ">
                     <a class="nav-link" href="../login.php">Войти</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../Test/Test.php">Тесты</a>
+                    <a class="nav-link" href="../Test/studying.php">Тесты</a>
                 </li>
             </ul>
     

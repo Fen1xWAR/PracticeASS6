@@ -18,7 +18,21 @@ require_once "../Components/header.php"
 <div class="container-fluid d-flex   flex-grow-1">
     <div class="container-xxl align-self-center  mt-5">
         <div class="row">
-            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-6 col-xs-12">
+            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">
+                <div class="card">
+                    <div class="card-img-wrapper">
+                        <img class="card-img-top" src="computer.png"  alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Комьютеры и по!</h5>
+                        <div class="card-content">
+                            <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>
+                            <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">
                 <div class="card">
                     <div class="card-img-wrapper">
                         <img class="card-img-top" src="computer.png"  alt="Card image cap">
@@ -27,26 +41,12 @@ require_once "../Components/header.php"
                         <h5 class="card-title">Комьютеры и по!</h5>
                         <div class="card-content">
                             <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>
-                            <a href="Test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
+                            <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-6 col-xs-12">
-                <div class="card">
-                    <div class="card-img-wrapper">
-                        <img class="card-img-top" src="computer.png"  alt="Card image cap">
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Комьютеры и по!</h5>
-                        <div class="card-content">
-                            <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>
-                            <a href="Test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-6 col-xs-12">
+            <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">
                 <div class="card">
                     <div class="card-img-wrapper">
                         <img class="card-img-top" src="computer.jpg"  alt="Card image cap">
@@ -55,7 +55,7 @@ require_once "../Components/header.php"
                         <h5 class="card-title">Комьютеры и по!</h5>
                         <div class="card-content">
                             <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>
-                            <a href="Test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
+                            <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>
                         </div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ require_once "../Components/header.php"
 
     </div>
 
-<!--        <div class="card-wrapper col-lg-4 col-md-6 col-xs-12">-->
+<!--        <div class="card-wrapper col-lg-4 col-md-5 col-xs-12">-->
 <!--            <div class="card">-->
 <!--                <div class="card-img-wrapper">-->
 <!--                    <img class="card-img-top" src="https://www.fortech.ro/wp-content/uploads/2018/12/DigitalCommerceSoftwarePlatform-e1554472385425.jpg" alt="Card image cap">-->
@@ -79,7 +79,7 @@ require_once "../Components/header.php"
 <!--            </div>-->
 <!--        </div>-->
 
-<!--        <div class="col-lg-4 col-md-6 col-xs-12 flex-grow-0">-->
+<!--        <div class="col-lg-4 col-md-5 col-xs-12 flex-grow-0">-->
 <!---->
 <!---->
 <!--            <a href="Test.php?blockId=1" class=" card-link">-->

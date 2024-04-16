@@ -54,7 +54,7 @@
     transition: 1.5s ease;
 }
 .card:hover .card-body {
-    height: 60%;
+    height: 80%;
 }
 .card:hover .card-content {
     bottom: 0;

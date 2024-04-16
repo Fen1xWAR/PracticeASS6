@@ -2,21 +2,27 @@
 require_once "../pdoConnection.php";
 if (isset($_GET['componentId'])) {
     $componentId = $_GET['componentId'];
-    $data = getComponentJson($componentId);
-    if ($data) {
-        try {
-            $component = json_decode($data['data'], true);
-            if (isset($component['Images'])) {
-                downloadImagesByComponentIdToDirectory($componentId);
+    try{
+        $data = getComponentJson($componentId);
+        if ($data) {
+            try {
+                $component = json_decode($data['data'], true);
+                if (isset($component['Images'])) {
+                    downloadImagesByComponentIdToDirectory($componentId);
+                }
+                $data['type'] == "Lecture" ? renderLecture($component) : http_response_code(500);
+            } catch (Exception $e) {
+                http_response_code(400);
             }
-            $data['type'] == "Lecture" ? renderLecture($component) : http_response_code(500);
-        } catch (Exception $e) {
-            http_response_code(400);
-        }
 
-    } else {
-        http_response_code(404);
+        } else {
+            http_response_code(404);
+        }
     }
+    catch (Exception $exception){
+        http_response_code(500);
+    }
+
 
 
 //    $json = file_get_contents("block".-$componentId.".json");
@@ -28,6 +34,11 @@ if (isset($_GET['componentId'])) {
 //   else{
 //      http_response_code(404);
 //   }
+
+}
+
+
+if(isset($_GET['blockId'])){
 
 }
 function getComponentJson($componentId)

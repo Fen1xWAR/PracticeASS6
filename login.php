@@ -60,13 +60,7 @@ require_once "Components/footer.php"
             url: form.attr('action'),
             data: {"login": data},
             success: function (data) {
-                Notification(data).show()
-                console.log('Submission was successful.');
-                if (data.slice(-4) === ".php") {
-                    location.href = "Profiles/" + data
-                } else {
-
-                }
+                location.href = "userProfile.php"
 
             },
             error: function (data) {

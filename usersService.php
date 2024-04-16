@@ -1,18 +1,6 @@
 <?php
 require_once "pdoConnection.php";
-function GetPageByRole($role)
-{
-    switch ($role){
-        case 'student':
-            return "studentProfile.php";
-        case 'teacher':
-            return "teacherProfile.php";
-        case 'admin':
-            return "adminProfile.php";
-        default :
-            return "";
-    }
-}
+
 function CheckLoginData($login, $password){
     global $dbh;
     try{
@@ -21,9 +9,11 @@ function CheckLoginData($login, $password){
         $query->execute();
         $result = $query->fetch();
         if($result> 0 and password_verify($password,$result['password'])){
-                echo GetPageByRole($result['role']);
-
-
+            session_start();
+            $role = $result['role'];
+            $_SESSION["role"] = $role;
+            header("Location : userProfile.php");
+            echo $_SESSION["role"];
         }
         else{
             echo "Логин или пароль неверны";

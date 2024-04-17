@@ -11,14 +11,15 @@
     <link rel="stylesheet" href="components.css">
     <title>Document</title>
 </head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
 <?php
-require_once "Components/header.php"
+require_once "Components/header.php";
 ?>
-<body class="d-flex flex-column min-vh-100"
-      style="background-image: url('bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-<div class="container-fluid p-5 d-flex flex-grow-1   justify-content-center align-items-center">
-    <div class="row">
-        <button class="btn btn-primary" onclick="location.href='login.php'">Войти</button>
+<div class="container-fluid d-flex flex-grow-1">
+    <div class="container-xxl d-flex  justify-content-center align-items-center flex-column p-5">
+        <h1>Начало начал!</h1>
+<!--        <button class="btn btn-primary" onclick="location.href='login.php'">Войти</button>-->
     </div>
 </div>
 

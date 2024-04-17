@@ -1,6 +1,6 @@
 <?php
 
-require_once "../pdoConnection.php";
+require_once "../../pdoConnection.php";
 
 $opt = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -16,8 +16,8 @@ $image_size = $_FILES['image_file']['size'];
 $image_type = $_FILES['image_file']['type'];
 
 // Check if the file is an image
-if (!in_array($image_type, ['image/jpeg', 'image/png', 'image/gif'])) {
-    die('Invalid file type. Only JPG, PNG, and GIF are allowed.');
+if ($image_type != 'image/png') {
+    die('Invalid file type. Only PNG  allowed.');
 }
 
 // Check if the file size is less than 5MB
@@ -36,7 +36,7 @@ $stmt->bindParam(':image_content', $image_content);
 $stmt->execute();
 
 // Redirect to the upload form
-header('Location: ImageForm.html');
+header('Location: BlockForm.html');
 exit;
 
 ?>

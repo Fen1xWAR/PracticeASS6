@@ -10,17 +10,6 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../components.css">
     <title>Document</title>
-    <?php
-
-    $blockStructure =
-        [
-            ['Type' => 'L',
-                'ComponentId' => 1],
-            ['Type' => 'L',
-                'ComponentId' => 2]
-
-        ];
-    ?>
 </head>
 
 <?php
@@ -32,14 +21,20 @@ require_once "../Components/header.php"
     <div class="container-xxl p-5">
         <div class="row flex-nowrap">
             <div class="col-1" style="min-width: 50px;">
-                <div id="nav-panel"  class="p-0 sticky-top mt-5 border" style="top: 4em; min-width: 50px; max-width: 100px">
+                <div id="nav-panel" class="p-0 sticky-top mt-5 border"
+                     style="top: 4em; min-width: 50px; max-width: 100px">
                     <ul id="nav-items" class="nav p-0 flex-column align-items-center">
 
                         <?php
                         require_once "RenderService.php";
-                        foreach ($blockStructure as $block) {
-                            generateNavButton($block['Type'], $block['ComponentId']);
+                        if (isset($_GET['blockId'])) {
+
+                            $blockStructure = getBLockStructure($_GET['blockId']);
+                            foreach ($blockStructure as $block) {
+                                generateNavButton($block['type'], $block['component_id']);
+                            }
                         }
+
                         ?>
                     </ul>
                 </div>
@@ -85,7 +80,6 @@ require_once "../Components/footer.php"
             window.scrollTo({top: 0, behavior: "auto"});
             let componentId = $(this).data('component-id');
             loadComponent(componentId);
-
 
 
         });

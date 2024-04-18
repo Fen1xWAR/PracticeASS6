@@ -82,12 +82,18 @@ require_once "Components/footer.php"
             url: form.attr('action'),
             data: {"login": data},
             success: function (data) {
-                location.href = "userProfile.php"
+                if(data['error']){
+                    this.error(data['error']);
+                }
+                else{
+                    location.href = "userProfile.php"
+                }
+
 
             },
             error: function (data) {
                 // console.log(data)
-                console.log('An error occurred.');
+                console.log('An error occurred: ' + data);
                 //Сделать всплывашку с ошибкой
             },
         });

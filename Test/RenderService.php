@@ -26,6 +26,51 @@ if (isset($_GET['componentId'])) {
 }
 
 
+if (isset($_GET['groupId'])){
+    session_start();
+    $groupId = $_GET['groupId'];
+    $_SESSION['selectedGroupId'] = $groupId;
+    $studentsData = getStudentListByGroupId($groupId);
+    echo creteStudentList($studentsData);
+
+}
+function creteStudentList($data): string
+{
+    if (count($data) == 0){
+        return "<h2 class='text-center'>В данной группе нет учеников</h2>";
+    }
+    $html = '<table class="table table-hover">';
+    $html .= '<tr>';
+    $html .= '<th>№</th>';
+    $html .= '<th>Имя</th>';
+    $html .= '<th>Фамилия</th>';;
+    $html .= '</tr>';
+    $indexInGroup = 0;
+    foreach ($data as $row) {
+        $indexInGroup++;
+        $html .= '<tr data-id="' . $row['id'] . '">';
+        $html .= '<td>' . $indexInGroup. '</td>';
+        $html .= '<td>' . $row['name'] . '</td>';
+        $html .= '<td>' . $row['surname'] . '</td>';
+        $html .= '</tr>';
+    }
+
+    $html .= '</table>';
+    return $html;
+}
+
+
+function getStudentListByGroupId($groupId)
+{
+    global $dbh;
+    $query = $dbh->prepare("SELECT s.id, h.name, h.surname FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
+    $query->bindValue(":groupId",$groupId);
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
 function getComponentJson($componentId)
 {
 

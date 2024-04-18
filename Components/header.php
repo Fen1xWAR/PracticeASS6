@@ -41,7 +41,7 @@
             <hr class="d-lg-none text-white">
                 <?php
                 session_start();
-                if (!isset($_SESSION["role"])) {
+                if (!isset($_SESSION['userID'])) {
                     echo '
                     <button class="btn btn-light" onclick="location.href=\'../login.php\'">Войти</button>';
                 } else {

@@ -28,6 +28,7 @@ require_once "../Components/header.php"
 
 
             ?>
+
 <!--                        <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
 <!--                            <div class="card">-->
 <!--                                <div class="card-img-wrapper">-->
@@ -103,9 +104,6 @@ require_once "../Components/header.php"
         <!--                </div>-->
         <!--            </a>-->
     </div>
-
-</div>
-
 
 </div>
 

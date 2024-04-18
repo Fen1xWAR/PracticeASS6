@@ -9,4 +9,27 @@
     border: 1px solid #353434;
     background-color: #a9afc1;
 }
+#startTestButton[disabled]::before {
+    content: "Войдите чтобы начать тестирование";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #38538e;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+#startTestButton[disabled]::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+    border-top: 5px solid #333;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
 

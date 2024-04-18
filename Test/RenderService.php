@@ -2,17 +2,22 @@
 require_once "../pdoConnection.php";
 if (isset($_GET['componentId'])) {
     $componentId = $_GET['componentId'];
+    session_start();
+    $_SESSION['currentComponentId'] = $componentId;
     try {
         $data = getComponentJson($componentId);
+
         if ($data) {
             try {
                 $component = json_decode($data['data'], true);
+                $_SESSION['currentComponentData'] = $component;
                 if (isset($component['Images'])) {
                     downloadImagesByComponentIdToDirectory($componentId);
                 }
-                $data['type'] == "Lecture" ? renderLecture($componentId, $component) : renderTest($componentId,$component);
+                $data['type'] == "Lecture" ? renderLecture($componentId, $component) : renderTest($component);
             } catch (Exception $e) {
                 http_response_code(400);
+                echo $e->getMessage();
             }
 
         } else {
@@ -20,9 +25,59 @@ if (isset($_GET['componentId'])) {
         }
     } catch (Exception $exception) {
         http_response_code(500);
+        echo $exception->getMessage();
     }
 
 
+}
+if (isset($_GET['groupId'])){
+    session_start();
+    $groupId = $_GET['groupId'];
+    $_SESSION['selectedGroupId'] = $groupId;
+    $studentsData = getStudentListByGroupId($groupId);
+    echo creteStudentList($studentsData);
+
+}
+
+if (isset($_POST['userAnswers'])) {
+    $userAnswers = $_POST['userAnswers'];
+    proceedUserAnswers($userAnswers);
+}
+function proceedUserAnswers($userAnswers) {
+    global $dbh;
+    $query = $dbh->prepare("SELECT answers FROM  test_answers  where component_id = :componentId");
+    session_start();
+    $query->bindParam(':componentId', $_SESSION['currentComponentId']);
+    $query->execute();
+    $result = $query->fetch();
+    $json = $result['answers'];
+    $answers = json_decode($json, true);
+    $numQuestions = count($userAnswers);;
+    $title = $_SESSION['currentComponentData']['Title'];
+    $numCorrect = 0;
+    $table = '<div class="card">';
+    $table .= "<div class='card-header'>" . htmlspecialchars($title) . "</div>\n";
+    $table .= '<div class="card-body">';
+    $table .= '<table class="table table-bordered table-striped">';
+    $table .= '<thead><tr><th class="text-center">#</th><th class="text-center">Ответ пользователя</th><th class="text-center">Правильный ответ</th></tr></thead>';
+    $table .= '<tbody>';
+    foreach ($userAnswers as $questionNumber => $userAnswer) {
+        $table .= '<tr>';
+        $table .= '<td class="text-center">' . ($questionNumber + 1) . '</td>';
+        $table .= '<td class="text-center">' . $userAnswer . '</td>';
+        $table .= '<td class="text-center">' . $answers[$questionNumber] . '</td>';
+        if ($userAnswer == $answers[$questionNumber]) {
+            $numCorrect++;
+        }
+        $table .= '</tr>';
+    }
+
+    $table .= '</tbody></table>';
+    $table .= '<p class="text-center">Количество правильных ответов: ' . $numCorrect . ' из ' . $numQuestions . '</p>';
+    $table .= '</div>';
+    $table .= '</div>';
+
+    echo $table;
 }
 function renderLecture(int $component_id, array $data): void
 {
@@ -37,7 +92,7 @@ function renderLecture(int $component_id, array $data): void
         $k+=1;
         $imagePosition = $image['mark'];
         $textBefore = substr($text, 0, $imagePosition);
-        $imgElement = "<img style='max-width: 50%;' src='../assets/comp_{$component_id}_{$k}.png'>";
+        $imgElement = "<img style='max-width: 50%;' src='../assets/comp_{$component_id}_$k.png' alt='рисунок'>";
         $imgDivElement = "<div>" . $imgElement . "</div>";
         $textElement .= $textBefore . $imgDivElement;
         $text = substr($text, $imagePosition);
@@ -46,26 +101,28 @@ function renderLecture(int $component_id, array $data): void
     $textElement .= htmlspecialchars($text) . "\n";
     $lectureElement .= $textElement . "</div>\n";
 
-    echo $lectureElement;
+    echo json_encode(["html" => $lectureElement]);
 }
 
-function renderTest(int $component_id, array $data): void
+function renderTest( array $data): void
 {
     $testElement = "<div class='card'>\n";
     $testElement .= "<div class='card-header'>" . htmlspecialchars($data['Title']) . "</div>\n";
-    $textElement = "<div class='p-4 card-body'>\n";
-    echo $testElement;
-
-}
-
-if (isset($_GET['groupId'])){
+    $textElement = "<div class='p-4 card-body d-flex flex-column justify-content-center'>\n";
     session_start();
-    $groupId = $_GET['groupId'];
-    $_SESSION['selectedGroupId'] = $groupId;
-    $studentsData = getStudentListByGroupId($groupId);
-    echo creteStudentList($studentsData);
+    $selectedGroupId = $_SESSION['userRole'] ?? null;
+    $textElement .= htmlspecialchars($data['Text']) . "\n";
 
+    $textElement .= "<button type='button' onclick='displayQuestion(0)' ". ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Start</button>\n";
+
+    $testElement .= $textElement . "</div>\n";
+    $testElement .= "</div>\n";
+
+    echo json_encode(["html" => $testElement, "questions"=>$data["Questions"]]);
 }
+
+
+
 function creteStudentList($data): string
 {
     if (count($data) == 0){
@@ -75,7 +132,7 @@ function creteStudentList($data): string
     $html .= '<tr>';
     $html .= '<th>№</th>';
     $html .= '<th>Имя</th>';
-    $html .= '<th>Фамилия</th>';;
+    $html .= '<th>Фамилия</th>';
     $html .= '</tr>';
     $indexInGroup = 0;
     foreach ($data as $row) {
@@ -92,7 +149,7 @@ function creteStudentList($data): string
 }
 
 
-function getStudentListByGroupId($groupId)
+function getStudentListByGroupId($groupId): false|array
 {
     global $dbh;
     $query = $dbh->prepare("SELECT s.id, h.name, h.surname FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
@@ -114,7 +171,7 @@ function getComponentJson($componentId)
 }
 
 
-function downloadImagesByComponentIdToDirectory($component_id)
+function downloadImagesByComponentIdToDirectory($component_id): void
 {
     global $dbh;
     $DIRECTORY = "../assets";
@@ -130,12 +187,12 @@ function downloadImagesByComponentIdToDirectory($component_id)
 
     foreach ($images as $index => $image) {
         $index ++;
-        $filename = "comp_{$component_id}_{$index}.png";
+        $filename = "comp_{$component_id}_$index.png";
         file_put_contents("$DIRECTORY/$filename", $image['image_content']);
     }
 }
 
-function downloadBlockImageById($block_id)
+function downloadBlockImageById($block_id): void
 {
     global $dbh;
     $DIRECTORY = "../assets";
@@ -150,7 +207,7 @@ function downloadBlockImageById($block_id)
     $image = $stmt->fetch();
 
     if ($image) {
-        $filename = "block_{$block_id}.png";
+        $filename = "block_$block_id.png";
         file_put_contents("$DIRECTORY/$filename", $image['block_image']);
     }
 }
@@ -171,7 +228,7 @@ function generateNavButton($componentButtonType, $componentId): void
 
 }
 
-function getAllBlocks()
+function getAllBlocks(): false|array
 {
     global $dbh;
     $query = $dbh->prepare("SELECT * FROM blocks");
@@ -179,7 +236,7 @@ function getAllBlocks()
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getBLockStructure($blockId)
+function getBLockStructure($blockId): false|array
 {
     global $dbh;
     $query = $dbh->prepare("SELECT type, component_id FROM components WHERE block_id= :blockId");
@@ -188,7 +245,7 @@ function getBLockStructure($blockId)
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function renderBlock($title, $text, $blockId)
+function renderBlock($title, $text, $blockId): void
 {
     downloadBlockImageById($blockId);
     $html = <<<HTML

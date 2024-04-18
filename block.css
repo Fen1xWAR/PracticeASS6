@@ -59,3 +59,10 @@
 .card:hover .card-content {
     bottom: 0;
 }
+.hidden-link {
+    opacity: 0;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+    display: block;
+}

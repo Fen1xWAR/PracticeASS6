@@ -258,9 +258,10 @@ function renderBlock($title, $text, $blockId): void
             <h5 class="card-title">$title</h5>
             <div class="card-content">
                 <p class="card-text">$text</p>
-                <a href="test.php?blockId=$blockId" class="btn btn-primary">Пройти тему</a>
+                
             </div>
         </div>
+        <a href="test.php?blockId=$blockId" class="hidden-link stretched-link">Пройти тему</a>
     </div>
 </div>
 HTML;

@@ -21,56 +21,56 @@ require_once "../Components/header.php"
             <?php
             require_once "RenderService.php";
             $blocks = getAllBlocks();
-            foreach ($blocks as $block){
+            foreach ($blocks as $block) {
 
-                renderBlock($block['block_name'],$block['block_description'],$block['block_id']);
+                renderBlock($block['block_name'], $block['block_description'], $block['block_id']);
             }
 
 
             ?>
 
-<!--                        <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
-<!--                            <div class="card">-->
-<!--                                <div class="card-img-wrapper">-->
-<!--                                    <img class="card-img-top" src="computer.png"  alt="Card image cap">-->
-<!--                                </div>-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">Комьютеры и по!</h5>-->
-<!--                                    <div class="card-content">-->
-<!--                                        <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
-<!--                                        <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
+<!--                                    <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
+<!--                                        <div class="card">-->
+<!--                                            <div class="card-img-wrapper">-->
+<!--                                                <img class="card-img-top" src="computer.png"  alt="Card image cap">-->
+<!--                                            </div>-->
+<!--                                            <div class="card-body">-->
+<!--                                                <h5 class="card-title">Комьютеры и по!</h5>-->
+<!--                                                <div class="card-content">-->
+<!--                                                    <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
+<!--                                                    <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
 <!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
-<!--                            <div class="card">-->
-<!--                                <div class="card-img-wrapper">-->
-<!--                                    <img class="card-img-top" src="computer.png"  alt="Card image cap">-->
-<!--                                </div>-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">Комьютеры и по!</h5>-->
-<!--                                    <div class="card-content">-->
-<!--                                        <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
-<!--                                        <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
+<!--                                    <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
+<!--                                        <div class="card">-->
+<!--                                            <div class="card-img-wrapper">-->
+<!--                                                <img class="card-img-top" src="computer.png"  alt="Card image cap">-->
+<!--                                            </div>-->
+<!--                                            <div class="card-body">-->
+<!--                                                <h5 class="card-title">Комьютеры и по!</h5>-->
+<!--                                                <div class="card-content">-->
+<!--                                                    <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
+<!--                                                    <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
 <!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
-<!--                            <div class="card">-->
-<!--                                <div class="card-img-wrapper">-->
-<!--                                    <img class="card-img-top" src="computer.jpg"  alt="Card image cap">-->
-<!--                                </div>-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">Комьютеры и по!</h5>-->
-<!--                                    <div class="card-content">-->
-<!--                                        <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
-<!--                                        <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+            <!--                        <div class="card-wrapper d-flex align-items-center justify-content-center  col-lg-4 col-md-5 col-xs-12">-->
+            <!--                            <div class="card">-->
+            <!--                                <div class="card-img-wrapper">-->
+            <!--                                    <img class="card-img-top" src="computer.jpg"  alt="Card image cap">-->
+            <!--                                </div>-->
+            <!--                                <div class="card-body">-->
+            <!--                                    <h5 class="card-title">Комьютеры и по!</h5>-->
+            <!--                                    <div class="card-content">-->
+            <!--                                        <p class="card-text">LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>-->
+            <!--                                        <a href="test.php?blockId=1" class="btn btn-primary">Пройти тему</a>-->
+            <!--                                    </div>-->
+            <!--                                </div>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
 
 
         </div>

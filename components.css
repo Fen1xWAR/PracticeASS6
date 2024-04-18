@@ -1,4 +1,12 @@
-.active{
-        border: 1px solid #353434;
-        background-color : #a9afc1;
+@media (max-width: 576px) {
+    img {
+        min-width: 100%;
+    }
+
 }
+
+.active {
+    border: 1px solid #353434;
+    background-color: #a9afc1;
+}
+

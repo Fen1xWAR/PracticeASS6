@@ -23,7 +23,7 @@ require_once "../Components/header.php"
             $blocks = getAllBlocks();
             foreach ($blocks as $block){
 
-                renderBlock($block['block_name'],$block['block_description'],$block['block_id'],$block['block_image_name']);
+                renderBlock($block['block_name'],$block['block_description'],$block['block_id']);
             }
 
 

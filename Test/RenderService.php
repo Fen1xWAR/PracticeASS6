@@ -10,7 +10,7 @@ if (isset($_GET['componentId'])) {
                 if (isset($component['Images'])) {
                     downloadImagesByComponentIdToDirectory($componentId);
                 }
-                $data['type'] == "Lecture" ? renderLecture($componentId, $component) : http_response_code(500);
+                $data['type'] == "Lecture" ? renderLecture($componentId, $component) : renderTest($componentId,$component);
             } catch (Exception $e) {
                 http_response_code(400);
             }
@@ -24,7 +24,39 @@ if (isset($_GET['componentId'])) {
 
 
 }
+function renderLecture(int $component_id, array $data): void
+{
+    $lectureElement = "<div class='card'>\n";
+    $lectureElement .= "<div class='card-header'>" . htmlspecialchars($data['Title']) . "</div>\n";
+    $textElement = "<div class='p-4 card-body'>\n";
 
+    $images = $data['Images'] ?? [];
+    $text = $data['Text'];
+    $k = 0;
+    foreach ($images as $image) {
+        $k+=1;
+        $imagePosition = $image['mark'];
+        $textBefore = substr($text, 0, $imagePosition);
+        $imgElement = "<img style='max-width: 50%;' src='../assets/comp_{$component_id}_{$k}.png'>";
+        $imgDivElement = "<div>" . $imgElement . "</div>";
+        $textElement .= $textBefore . $imgDivElement;
+        $text = substr($text, $imagePosition);
+    }
+
+    $textElement .= htmlspecialchars($text) . "\n";
+    $lectureElement .= $textElement . "</div>\n";
+
+    echo $lectureElement;
+}
+
+function renderTest(int $component_id, array $data): void
+{
+    $testElement = "<div class='card'>\n";
+    $testElement .= "<div class='card-header'>" . htmlspecialchars($data['Title']) . "</div>\n";
+    $textElement = "<div class='p-4 card-body'>\n";
+    echo $testElement;
+
+}
 
 if (isset($_GET['groupId'])){
     session_start();
@@ -156,7 +188,7 @@ function getBLockStructure($blockId)
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function renderBlock($title, $text, $blockId, $block_image_name)
+function renderBlock($title, $text, $blockId)
 {
     downloadBlockImageById($blockId);
     $html = <<<HTML
@@ -179,27 +211,3 @@ HTML;
     echo $html;
 }
 
-function renderLecture(int $component_id, array $data): void
-{
-    $lectureElement = "<div class='card'>\n";
-    $lectureElement .= "<div class='card-header'>" . htmlspecialchars($data['Title']) . "</div>\n";
-    $textElement = "<div class='p-4 card-body'>\n";
-
-    $images = $data['Images'] ?? [];
-    $text = $data['Text'];
-    $k = 0;
-    foreach ($images as $image) {
-        $k+=1;
-        $imagePosition = $image['mark'];
-        $textBefore = substr($text, 0, $imagePosition);
-        $imgElement = "<img style='max-width: 50%;' src='../assets/comp_{$component_id}_{$k}.png'>";
-        $imgDivElement = "<div>" . $imgElement . "</div>";
-        $textElement .= $textBefore . $imgDivElement;
-        $text = substr($text, $imagePosition);
-    }
-
-    $textElement .= htmlspecialchars($text) . "\n";
-    $lectureElement .= $textElement . "</div>\n";
-
-    echo $lectureElement;
-}

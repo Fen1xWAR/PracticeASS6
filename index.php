@@ -17,7 +17,7 @@
 require_once "Components/header.php";
 ?>
 <div class="container-fluid d-flex flex-grow-1">
-    <div class="container-xxl d-flex  justify-content-center align-items-center flex-column p-5">
+    <div class="container-xxl d-flex  justify-content-center align-items-center flex-column p-0 p-sm-5">
         <h1>Начало начал!</h1>
 <!--        <button class="btn btn-primary" onclick="location.href='login.php'">Войти</button>-->
     </div>

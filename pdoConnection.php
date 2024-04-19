@@ -8,10 +8,10 @@ try {
     $responseData['error'] = 'Database connection error';
 }
 
-if (isset($responseData['error'])) {
-    header('Content-Type: application/json');
-    echo json_encode($responseData);
-    exit;
-}
+//if (isset($responseData['error'])) {
+//    header('Content-Type: application/json');
+//    echo json_encode($responseData);
+//    exit;
+//}
 
 // Use the $dbh object for further database operations.

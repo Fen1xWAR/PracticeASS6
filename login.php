@@ -93,7 +93,7 @@ require_once "Components/footer.php"
             },
             error: function (data) {
                 // console.log(data)
-                console.log('An error occurred: ' + data);
+                console.error('An error occurred: ' + data);
                 //Сделать всплывашку с ошибкой
             },
         });

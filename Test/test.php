@@ -88,6 +88,7 @@ require_once "../Components/footer.php"
             type: 'GET',
             data: {"componentId": componentId},
             success: function (data) {
+                // console.log(data)
                 const componentData = JSON.parse(data)
                 questions = componentData['questions'];
                 if (componentData['html']) {
@@ -100,7 +101,7 @@ require_once "../Components/footer.php"
                 }
             },
             error: function (error) {
-                console.log(error);
+                console.error(error);
                 let errorM = $('<div>Error loading block.</div>').addClass("card").appendTo("#container")
                 $('#container').html(errorM);
             }
@@ -131,7 +132,7 @@ require_once "../Components/footer.php"
 
     function displayQuestion(currentQuestionNumber) {
         const wrapper = $('<div class="card"></div>');
-        const testHeader = $('<div class="card card-header"><?php session_start(); echo $_SESSION['currentComponentData']['Title'] ?></div>')
+        const testHeader = $('<div class="card card-header"><?php  echo $_SESSION['currentComponentData']['Title'] ?? "" ?></div>');
         const question = questions[currentQuestionNumber];
         const questionText = question['QuestionText'];
         const questionCategory = question['QuestionCategory'];
@@ -263,7 +264,7 @@ require_once "../Components/footer.php"
 
 
     $(document).ready(function () {
-
+        $('#container').empty();
         $('#nav-panel .nav-link').click(function (e) {
             e.preventDefault();
 
@@ -273,8 +274,9 @@ require_once "../Components/footer.php"
 
 
         });
+
         // Load initial block
-        loadComponent($("#nav-panel .nav-link").data("component-id"));
+        loadComponent(  $("#nav-panel .nav-link").data("component-id"));
 
     });
 

@@ -40,25 +40,30 @@ require_once "../Components/header.php"
                 </div>
             </div>
             <div class="text-wrap col-10" style="text-align: justify">
-                <div id="container" class=" container-fluid">
+                <div  class=" container-fluid">
 
                     <div class="card mb-3">
-                        <div class="card card-header"></div>
-                        <div class="card-body p-3"><p class="card-text"> Тестовый вопрос с одним вариантом ответов </p>
-                            <div class="form-check mb-2"><input class="form-check-input" type="radio" name="question"
-                                                                id="option1" value="option1"> <label
-                                        class="form-check-label" for="option1"> Первый вариант </label></div>
-                            <div class="form-check mb-2"><input class="form-check-input" type="radio" name="question"
-                                                                id="option2" value="option2"> <label
-                                        class="form-check-label" for="option2"> Второй вариант </label></div>
-                            <div class="form-check"><input class="form-check-input" type="radio" name="question"
-                                                           id="option3" value="option3"> <label class="form-check-label"
-                                                                                                for="option3"> Третий
-                                    вариант </label></div>
+                        <div class="card card-header" id="header"></div>
+                        <div class="card-body  p-3" id="container">
+                            <p class="card-text"> Тестовый вопрос с одним вариантом ответов </p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question" id="option1"
+                                       value="option1">
+                                <label class="form-check-label" for="option1"> Первый вариант </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question" id="option2"
+                                       value="option2">
+                                <label class="form-check-label" for="option2"> Второй вариант </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="question" id="option3"
+                                       value="option3">
+                                <label class="form-check-label" for="option3"> Третий вариант </label>
+                            </div>
                         </div>
-                        <div class="card-footer p-2">
-                            <button type="button" id="backButton" class="btn btn-primary" disabled="">Назад</button>
-                            <button type="button" id="nextButton" class="btn btn-primary float-right">Далее</button>
+                        <div id="footer" class="card-footer p-2 d-none">
+
                         </div>
                     </div>
 
@@ -91,13 +96,27 @@ require_once "../Components/footer.php"
                 // console.log(data)
                 const componentData = JSON.parse(data)
                 questions = componentData['questions'];
+                const $container = $('#container');
+                const $footer = $("#footer");
+                const $header = $('#header')
+
                 if (componentData['html']) {
-                    $('#container').html(componentData['html']);
+                    $container.html(componentData['html']);
+                    $header.text(componentData["header"]);
+
+                    if (componentData['footer']) {
+                        $footer.addClass("d-flex").removeClass("d-none");
+                        $footer.html(componentData['footer'])
+                    } else {
+                        $footer.addClass("d-none").removeClass("d-flex");
+                        $footer.empty()
+                    }
+
                     // Add active class to selected navigation link
                     $('#nav-panel .nav-link').removeClass('active');
                     $('[data-component-id="' + componentId + '"]').addClass('active');
                 } else {
-                    $('#container').html('<p>Block not found.</p>');
+                    $container.html('<p>Block not found.</p>');
                 }
             },
             error: function (error) {
@@ -189,13 +208,13 @@ require_once "../Components/footer.php"
             //Текстовое поле
             case 2:
                 const textInput = $('<input type="text" id="1" class="form-control">');
-                const textLabel =$('<label class="form-label" for="1"></label>').text("Введите ответ:");
-                const textDiv =$('<div class="mb-2"></div>');
+                const textLabel = $('<label class="form-label" for="1"></label>').text("Введите ответ:");
+                const textDiv = $('<div class="mb-2"></div>');
                 textDiv.append(textLabel);
                 textDiv.append(textInput);
 
                 textInput.change(() => {
-                    userAnswers[currentQuestionNumber] = textInput.val();
+                    userAnswers[currentQuestionNumber] = textInput.val().toLowerCase();
                 });
                 questionElement.append(textDiv);
                 break;
@@ -234,6 +253,7 @@ require_once "../Components/footer.php"
             } else if (questionCategory === 1) {
                 userAnswers[currentQuestionNumber - 1] = userAnswers[currentQuestionNumber - 1] ? userAnswers[currentQuestionNumber - 1].join(',') : '';
             }
+
             displayQuestion(currentQuestionNumber);
             $("#backButton").prop("disabled", false)
 
@@ -276,11 +296,9 @@ require_once "../Components/footer.php"
         });
 
         // Load initial block
-        loadComponent(  $("#nav-panel .nav-link").data("component-id"));
+        loadComponent($("#nav-panel .nav-link").data("component-id"));
 
     });
-
-
 
 
 </script>

@@ -1,23 +1,34 @@
-function Notification(Text,Duration=2000,Root ='.wrapper'){
+
+function Notification(text, duration = 2000, root='.toast-container') {
     return {
-        obj: $('<div class="AlertPosition"></div>'),
-        text: Text,
-        duration: Duration,
-        root: Root,
+        obj: $('<div class="toast  text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true"></div>'),
+        text: text,
+        duration: duration,
+        root: root,
         show: function () {
-            $(".AlertPosition").remove()
-            $(this.root).append(this.obj)
-            this.obj.append('<div class="AlertBox"></div>')
-            this.obj.children().text(this.text)
-            setTimeout((context) => {
-                context.hide()
-            }, this.duration, this)
+            const toast = this.obj;
+            const toastBody = $('<div class="toast-body"></div>');
+            if($('.toast').length >= 3){
+                $(this.root).empty();
+            }
+            toastBody.text(this.text);
+            toast.append(toastBody);
+            const toastContainer = $(this.root);
+            toastContainer.append(toast);
+            toast.toast({ delay: this.duration });
+            toast.toast('show');
+            setTimeout(() => {
+                toast.toast('hide');
+            }, this.duration);
         },
         hide: function () {
-            this.obj.empty()
-            this.obj.remove()
-
+            this.obj.remove();
         }
-
     }
+}
+function ajaxErrorHandling(xhr) {
+    const errorMessage = JSON.parse(xhr.responseText).message;
+    Notification(errorMessage).show();
+    console.log('An error occurred: ' + errorMessage);
+
 }

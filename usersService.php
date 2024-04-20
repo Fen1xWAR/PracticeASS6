@@ -1,10 +1,13 @@
 <?php
 require_once "pdoConnection.php";
-function CheckLoginData($login, $password)
+function CheckLoginData($login, $password): array|string
 {
     global $dbh;
-
-    $query = $dbh->prepare("SELECT user_id, password, roles.role FROM users JOIN roles ON users.role_id = roles.role_id WHERE users.login = :login");
+    try {
+        $query = $dbh->prepare("SELECT user_id, password, roles.role FROM users JOIN roles ON users.role_id = roles.role_id WHERE users.login = :login");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
     $query->bindValue(":login", $login);
     $query->execute();
     $result = $query->fetch();
@@ -19,37 +22,32 @@ function CheckLoginData($login, $password)
 }
 
 if (isset($_POST['login'])) {
-    $responseData = [];
-
-    set_error_handler(function ($severity, $message, $file, $line) use (&$responseData) {
-        $responseData['error'] = $message;
-    }, E_ALL);
 
     $logData = $_POST['login'];
     $login = $logData['login'];
     $password = $logData['password'];
 
-    try {
-        $data = CheckLoginData($login, $password);
-    } catch (Exception $e) {
-        $responseData['error'] = $e->getMessage();
-    }
 
-    $role = $data['userRole'];
-    $id = $data['userID'];
+    $data = CheckLoginData($login, $password);
 
-    if ($id) {
+    if (is_string($data)) {
+        http_response_code(404);
+        echo json_encode(["message" => "Неверный логин или пароль!"], JSON_UNESCAPED_UNICODE);
+    } else {
+        $role = $data['userRole'];
+        $id = $data['userID'];
+
         session_start();
         $_SESSION['userRole'] = $role;
         $_SESSION['userID'] = $id;
-        $responseData['success'] = true;
-    } else {
-        $responseData['error'] = 'User not found';
+
+        http_response_code(200);
+
     }
 
-    header('Content-Type: application/json');
-    echo json_encode($responseData);
+
 }
+
 if (isset($_POST['logout'])) {
     session_start();
     session_unset();

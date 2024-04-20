@@ -34,7 +34,7 @@ if (isset($_GET['componentId'])) {
 
 if (isset($_POST['userAnswers'])) {
     $userAnswers = $_POST['userAnswers'];
-    proceedUserAnswers($userAnswers);
+    echo json_encode(["html" => proceedUserAnswers($userAnswers)]);
 }
 
 if (isset($_GET['groupId'])) {
@@ -43,10 +43,11 @@ if (isset($_GET['groupId'])) {
     $_SESSION['selectedGroupId'] = $groupId;
     $studentsData = getStudentListByGroupId($groupId);
     if(count($studentsData) == 0){
-        echo "<h2 class='text-center'>В данной группе нет учеников</h2>";
+
+        echo json_encode(["html" => "<h3 class='text-center'>В данной группе нет учеников</h3>"]);
     }
     else{
-            echo createStudentList($studentsData);
+        echo json_encode(["html" => createStudentList($studentsData)]);
     }
 
 
@@ -57,28 +58,25 @@ if (isset($_GET["testId"])) {
     $userId = $_SESSION["userID"];
     $_SESSION['selectedTestOd'] = $testId;
     $testResult = getResultByTestAndUserId($testId, $userId);
+    if (count($testResult) == 0) {
+        echo json_encode(["html" => "<h3 class='text-center'>Вы еще не проходили это тестирование</h3>"]);
+    } else {
+        $userAnswers = json_decode($testResult['result'], true)["UserAnswers"];
+        $correctAnswers = json_decode($testResult['answers']);
+        $table = generateTestResultTable(['№', "Ваш ответ", "Правильный ответ"], false, $userAnswers, $correctAnswers)['table'];
 
-    for ($i = 0; $i < count($testResult); $i++) {
-        $header = $testResult[$i]['result_date'];
-        echo generateAccordionItem($i + 1, $header, displayTestResult($testResult[$i]));
+        echo json_encode(["html" => $table]);
+
     }
 
 
-}
-
-function displayTestResult($dataToDisplay): string
-{
-
-    $userAnswers = json_decode($dataToDisplay['result'], true)["UserAnswers"];
-    $correctAnswers = json_decode($dataToDisplay['answers']);
-    return generateTableFromColumns(['№ вопроса', "Твой ответ", "Правильный ответ"], $userAnswers, $correctAnswers);
-
 
 }
+
 function createStudentList($data): string
 {
 
-    $html = '<table class="table table-hover">';
+    $html = '<table class="table table-stripped table-hover">';
     $html .= '<tr>';
     $html .= '<th>№</th>';
     $html .= '<th>ФИО</th>';
@@ -88,37 +86,48 @@ function createStudentList($data): string
         $indexInGroup++;
         $html .= '<tr data-id="' . $row['id'] . '">';
         $html .= '<td>' . $indexInGroup . '</td>';
-        $html .= '<td>' . ($row['surname'] . " " . mb_substr($row['name'], 0, 1). "." ) . '</td>';
+        $html .= '<td>' . ($row['surname'] . " " . substr($row['name'], 0, 2) . ".") . '</td>';
         $html .= '</tr>';
     }
 
     $html .= '</table>';
     return $html;
 }
-function generateTableFromColumns(array $headers, ...$columns) {
+
+function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): array
+{
+    $correctAnswersCount = 0;
+    $columnCount = $isTeacher ? count($columns) : count($columns) - 1;
+    $rowCount = count($columns[0]);
+
     $table = '<table class="table table-bordered table-striped">';
     $table .= '<thead>';
     $table .= '<tr>';
-    foreach ($headers as $header) {
-        $table .= '<th class="text-center">' . htmlspecialchars($header) . '</th>';
+
+    for ($i = 0; $i <= $columnCount; $i++) {
+        $table .= '<th class="table-primary text-center">' . $headers[$i] . '</th>';
     }
     $table .= '</tr>';
     $table .= '</thead>';
     $table .= '<tbody>';
 
-    // Get the number of columns
-    $columnCount = count($columns);
-    $rowCount = count($columns[0]);
+
 
     // Generate the table rows
     for ($i = 0; $i < $rowCount; $i++) {
-        $table .= '<tr>';
+        if ($columns[0][$i] == $columns[1][$i]) {
+            $correctAnswersCount++;
+            $colorClass = "success";
+        } else {
+            $colorClass = "danger";
+        }
+        $table .= "<tr  class='table-" . $colorClass . "'>";
 
         // Add the row number cell
         $table .= '<td class="text-center">' . ($i + 1) . '</td>';
 
         for ($j = 0; $j < $columnCount;$j++){
-            $table .= '<td class="text-center">' . htmlspecialchars($columns[$j][$i]) . '</td>';
+            $table .= '<td class="text-center">' . $columns[$j][$i] . '</td>';
         }
 
 
@@ -126,43 +135,25 @@ function generateTableFromColumns(array $headers, ...$columns) {
     }
 
     $table .= '</tbody></table>';
-    return $table;
+    return [
+        "table" => $table,
+        "correctAnswersCount" => $correctAnswersCount,
+    ];
 }
 
-function generateAccordionItem($id, $heading, $content)
-{
-    $show = $id === 1 ? ' show' : '';
-    $collapsed = $id != 1 ? "collapsed" : '';
-    $accordionItem = <<<EOF
-<div class="accordion-item">
-    <h2 class="accordion-header">
-        <button class="accordion-button {$collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{$id}"
-                aria-expanded="true" aria-controls="collapse{$id}">
-            {$heading}
-        </button>
-    </h2>
-    <div id="collapse{$id}" class="accordion-collapse collapse {$show}" data-bs-parent="#resultAccordion">
-        <div class="accordion-body">
-            {$content}
-        </div>
-    </div>
-</div>
-EOF;
 
-    return $accordionItem;
-}
 
 function getResultByTestAndUserId($testId, $userId): false|array
 {
     global $dbh;
-    $query = $dbh->prepare('SELECT result, answers, result_date from complete_components_by_student JOIN education_system.test_answers ta on complete_components_by_student.component_id = ta.component_id    where complete_components_by_student.component_id=:testId AND student_id=(SELECT student_id from students where user_id=:userId) ORDER BY result_date desc');
+    $query = $dbh->prepare('SELECT result, answers, result_date from complete_components_by_student JOIN education_system.test_answers ta on complete_components_by_student.component_id = ta.component_id    where complete_components_by_student.component_id=:testId AND student_id=(SELECT student_id from students where user_id=:userId)');
     $query->bindValue(":testId", $testId);
     $query->bindValue(":userId", $userId);
     $query->execute();;
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    return $query->fetch(PDO::FETCH_ASSOC);
 }
 
-function proceedUserAnswers($userAnswers): void
+function proceedUserAnswers($userAnswers): string
 {
     global $dbh;
     $query = $dbh->prepare("SELECT answers FROM  test_answers  where component_id = :componentId");
@@ -173,27 +164,11 @@ function proceedUserAnswers($userAnswers): void
     $json = $result['answers'];
     $answers = json_decode($json, true);
     $numQuestions = count($userAnswers);;
-    $title = $_SESSION['currentComponentData']['Title'];
-    $numCorrect = 0;
-    $table = '<div class="card">';
-    $table .= "<div class='card-header'>" . htmlspecialchars($title) . "</div>\n";
-    $table .= '<div class="card-body">';
-    $table.= '<div class="overflow-auto">';
-    $table .= '<table class="table table-bordered table-striped"     >';
-    $table .= '<thead><tr><th class="text-center">№</th><th class="text-center">Ответ пользователя</th><th class="text-center">Правильный ответ</th></tr></thead>';
-    $table .= '<tbody>';
-    foreach ($userAnswers as $questionNumber => $userAnswer) {
-        $table .= '<tr>';
-        $table .= '<td class="text-center">' . ($questionNumber + 1) . '</td>';
-        $table .= '<td class="text-center">' . $userAnswer . '</td>';
-        $table .= '<td class="text-center">' . $answers[$questionNumber] . '</td>';
-        if ($userAnswer == $answers[$questionNumber]) {
-            $numCorrect++;
-        }
-        $table .= '</tr>';
-    }
 
-    $table .= '</tbody></table>';
+    $isTeacher = $_SESSION['userRole'] == 'teacher';
+    $tableResultArray = generateTestResultTable(["№", "Ваш ответ", "Правильный ответ"], $isTeacher, $userAnswers, $answers);
+    $table = $tableResultArray['table'];
+    $numCorrect = $tableResultArray['correctAnswersCount'];
     $table .= '<p class="text-center">Количество правильных ответов: ' . $numCorrect . ' из ' . $numQuestions . '</p>';
 
     if ($_SESSION['userRole'] === "student") {
@@ -205,22 +180,20 @@ function proceedUserAnswers($userAnswers): void
                 "UserResult" => $numCorrect,
                 "MaxResult" => $numQuestions
             ]);
-            $table .= '</div>';
-            $table .= '</div>';
-            $table .= '</div>';
-            echo  $table;
+
+            return $table;
 
         }
         $table .= '<h4 class="text-center">Результат не был записан: вы уже проходили это тестирование</h4>';
 
     }
-    $table .= '</div>';
-    $table .= '</div>';
-    $table .= '</div>';
-    echo $table;
+
+
+    return $table;
 
 }
-function checkExistingResult()
+
+function checkExistingResult(): bool
 {
     global $dbh;
     $query = $dbh->prepare("SELECT id from complete_components_by_student where student_id = (SELECT students.id FROM students WHERE user_id = :user_id) AND component_id= :component_id");
@@ -236,13 +209,14 @@ function checkExistingResult()
 function saveUserAnswersToDb($userAnswers): void
 {
     global $dbh;
-    $query = $dbh->prepare("INSERT INTO complete_components_by_student (component_id, student_id, result)
+    $query = $dbh->prepare("INSERT INTO complete_components_by_student (component_id, student_id, result, result_date )
 VALUES (:component_id,
 (SELECT students.id FROM students WHERE user_id = :user_id),
-:result);");
+:result, :result_date);");
     $query->bindValue(":component_id", $_SESSION['currentComponentId']);
     $query->bindValue(":user_id", $_SESSION['userID']);
     $query->bindValue(":result", json_encode($userAnswers));
+    $query->bindValue(":result_date", date("Y-m-d H:i:s"));
     $query->execute();
 }
 
@@ -274,7 +248,7 @@ function renderTest(array $data): void
     $selectedGroupId = $_SESSION['userRole'] ?? null;
     $textElement .= htmlspecialchars($data['Text']) . "\n";
 
-    $footer = "<button type='button' onclick='displayQuestion(0)' " . ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Start</button>\n";
+    $footer = "<button type='button' onclick='displayQuestion(0)' " . ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Старт</button>\n";
 
 
     echo json_encode([ "header"=>$data['Title'],"html" => $textElement, "questions" => $data["Questions"], "footer"=> $footer]);

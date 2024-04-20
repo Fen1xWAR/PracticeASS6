@@ -43,26 +43,12 @@ require_once "../Components/header.php"
                 <div  class=" container-fluid">
 
                     <div class="card mb-3">
-                        <div class="card card-header" id="header"></div>
+                        <div class="card card-header" id="header">
+                            </div>
                         <div class="card-body  p-3" id="container">
-                            <p class="card-text"> Тестовый вопрос с одним вариантом ответов </p>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="question" id="option1"
-                                       value="option1">
-                                <label class="form-check-label" for="option1"> Первый вариант </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="question" id="option2"
-                                       value="option2">
-                                <label class="form-check-label" for="option2"> Второй вариант </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="question" id="option3"
-                                       value="option3">
-                                <label class="form-check-label" for="option3"> Третий вариант </label>
-                            </div>
+
                         </div>
-                        <div id="footer" class="card-footer p-2 d-none">
+                        <div id="footer" class="card-footer p-2 d-none justify-content-around">
 
                         </div>
                     </div>
@@ -86,19 +72,19 @@ require_once "../Components/footer.php"
         crossorigin="anonymous"></script>
 <script>
     let questions = [];
-
+    let userAnswers = [];
+    const $container = $("#container");
+    const $footer = $("#footer");
+    const $header = $('#header')
     function loadComponent(componentId) {
         $.ajax({
             url: 'RenderService.php',
             type: 'GET',
             data: {"componentId": componentId},
             success: function (data) {
-                // console.log(data)
                 const componentData = JSON.parse(data)
                 questions = componentData['questions'];
-                const $container = $('#container');
-                const $footer = $("#footer");
-                const $header = $('#header')
+
 
                 if (componentData['html']) {
                     $container.html(componentData['html']);
@@ -115,22 +101,20 @@ require_once "../Components/footer.php"
                     // Add active class to selected navigation link
                     $('#nav-panel .nav-link').removeClass('active');
                     $('[data-component-id="' + componentId + '"]').addClass('active');
-                } else {
-                    $container.html('<p>Block not found.</p>');
                 }
             },
             error: function (error) {
                 console.error(error);
-                let errorM = $('<div>Error loading block.</div>').addClass("card").appendTo("#container")
+                let errorM = $('<h2>Error loading block.</h2>').appendTo("#container")
                 $('#container').html(errorM);
             }
         });
     }
 
-    let userAnswers = [];
+
 
     function sendAnswers() {
-
+        $footer.removeClass('d-flex').addClass('d-none')
         userAnswers = userAnswers.map(item => {
             if (typeof item === 'string' && item.includes(',')) {
                 return item.replace(',', '').split('').sort().join('');
@@ -138,20 +122,23 @@ require_once "../Components/footer.php"
                 return item.toString();
             }
         })
-        console.log(userAnswers)
         $.ajax({
             type: "POST",
             url: 'renderService.php',
             data: {"userAnswers": userAnswers},
             success: function (data) {
-                $("#container").html(data)
+                const response = JSON.parse(data)
+                if(response['html']){
+
+                    $("#container").html(response['html'])
+                }
+
             },
         });
     }
 
     function displayQuestion(currentQuestionNumber) {
-        const wrapper = $('<div class="card"></div>');
-        const testHeader = $('<div class="card card-header"><?php  echo $_SESSION['currentComponentData']['Title'] ?? "" ?></div>');
+
         const question = questions[currentQuestionNumber];
         const questionText = question['QuestionText'];
         const questionCategory = question['QuestionCategory'];
@@ -221,7 +208,6 @@ require_once "../Components/footer.php"
 
         }
 
-        const buttonsElement = $('<div class="card-footer d-flex justify-content-around p-2"></div>');
         const backButton = $('<button type="button" id="backButton"  class="btn btn-primary">Назад</button>');
         backButton.click(() => {
             console.log(typeof (userAnswers[currentQuestionNumber]))
@@ -237,11 +223,9 @@ require_once "../Components/footer.php"
 
             $("#nextButton").prop('disabled', false)
 
+
         });
-        if (currentQuestionNumber === 0) {
-            backButton.prop('disabled', true);
-        }
-        buttonsElement.append(backButton);
+
 
         const nextButton = $('<button type="button" id="nextButton" class="btn btn-primary ">Далее</button>');
         nextButton.click(() => {
@@ -273,13 +257,9 @@ require_once "../Components/footer.php"
         });
 
 
-        buttonsElement.append(nextButton);
-
-        questionElement.append(buttonsElement);
-        wrapper.append(testHeader)
-        wrapper.append(questionElement)
-
-        $('#container').html(wrapper);
+        $container.html(questionElement);
+        $footer.html(backButton)
+        $footer.append(nextButton)
     }
 
 
@@ -295,7 +275,6 @@ require_once "../Components/footer.php"
 
         });
 
-        // Load initial block
         loadComponent($("#nav-panel .nav-link").data("component-id"));
 
     });

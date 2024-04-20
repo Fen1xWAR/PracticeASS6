@@ -6,7 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -16,48 +15,34 @@
     require 'Components/header.php';
     ?>
 </header>
-<div class="container-fluid d-flex flex-grow-1">
-    <div class="container-xl d-flex justify-content-center flex-column p-5">
-<!--        <form id="loginForm" action="usersService.php" method="post" class="text-center">-->
-<!--            <div class="form-group  row">-->
-<!--                <label for="login" class="col-form-label text-start col-sm-2">Логин:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <input name="login" type="text" id="login" class="form-control">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="form-group mt-2  row">-->
-<!--                <label for="password" class="col-form-label text-start col-sm-2">Пароль:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <input name="password" type="password" id="password" class="form-control">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="form-group mt-2">-->
-<!--                <button type="submit" class="btn btn-primary">Войти</button>-->
-<!--            </div>-->
-<!--        </form>-->
+<div id="toastRoot" class="container-fluid d-flex flex-grow-1">
+    <div  class="container-xl d-flex justify-content-center flex-column p-5">
+
         <div class="row justify-content-center ">
 
             <div class="col-md-6">
 
-                <form id="loginForm" class="fs-5" action="usersService.php" method="post">
-                    <div class="mb-3">
+                <form id="loginForm" class="d-flex flex-column  fs-5" action="usersService.php" method="post">
+                    <div class="mb-3 ">
                         <label for="exampleInputEmail"  class="form-label">Логин</label>
-                        <input name="login" type="text" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp">
+                        <input name="login" type="text" required class="form-control" id="exampleInputEmail" aria-describedby="emailHelp">
+
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword" class="form-label">Пароль</label>
-                        <input name="password" type="password" class="form-control" id="exampleInputPassword">
+                        <input name="password" required type="password" class="form-control" id="exampleInputPassword">
+
                         <div id="passwordHelp" class="form-text">Никому не сообщайте ваш пароль.</div>
                     </div>
-<!--                    <div class="mb-3 form-check">-->
-<!--                        <input type="checkbox" class="form-check-input" id="exampleCheck1">-->
-<!--                        <label class="form-check-label" for="exampleCheck1">Check me out</label>-->
-<!--                    </div>-->
+
                     <button type="submit" class="btn btn-primary">Войти</button>
                 </form>
             </div>
         </div>
     </div>
+</div>
+<div class="toast-container position-fixed  end-0" style="bottom: 3.5rem">
+
 </div>
 <?php
 require_once "Components/footer.php"
@@ -70,8 +55,10 @@ require_once "Components/footer.php"
 <script src="script.js"></script>
 <script>
     const form = $("#loginForm")
+
     form.submit(function (e) {
         e.preventDefault()
+
         let formData = form.serializeArray()
         let data = {
             login: formData[0].value,
@@ -81,21 +68,18 @@ require_once "Components/footer.php"
             type: form.attr('method'),
             url: form.attr('action'),
             data: {"login": data},
-            success: function (data) {
-                if(data['error']){
-                    this.error(data['error']);
-                }
-                else{
+            success: function () {
+                    form.addClass("was-validated")
+                setTimeout(()=>{
                     location.href = "userProfile.php"
-                }
+                },800)
+
 
 
             },
-            error: function (data) {
-                // console.log(data)
-                console.error('An error occurred: ' + data);
-                //Сделать всплывашку с ошибкой
-            },
+            error: ajaxErrorHandling
+
+
         });
 
 

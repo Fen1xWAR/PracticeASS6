@@ -1,6 +1,6 @@
 <?php
 require_once "pdoConnection.php";
-global $dbh;
+
 ?>
 
 
@@ -17,43 +17,44 @@ global $dbh;
     <div class="tab-pane fade show active " id="users-tab-pane" role="tabpanel" aria-labelledby="users-tab" tabindex="0">
         <div class="overflow-auto" style="height: 450px">
 
+            <?php
+            renderUsersTable();
+            function renderUsersTable()
 
-  <?php
-        $query = "SELECT user_id, login, password, role, name,surname FROM users JOIN roles ON roles.role_id = users.role_id
-        JOIN education_system.human_data hd on hd.data_id = users.data_id";
-        $result = $dbh->query($query);;
-        if ($result->rowCount() > 0) {
-        echo "<div class='d-flex flex-column'>";
-            echo "<table class='table table-hover'>";
-                echo "<tr>
-                    <th>ID</th>
-                    <th>Логин</th>
-                    <th>Роль</th>
-                    <th>ФИО</th>
-                </tr>";
-
-
-                foreach ($result->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-                echo "<tr class='user' data-id='" . $row['user_id'] . "' >";
-                echo "<td>" . $row['user_id'] . "</td>";
-                echo "<td>" . $row['login'] . "</td>";
-                echo "<td>" . $row['role'] . "</td>";
-                $fullName = $row['surname'] . " " . mb_substr($row['name'], 0, 1) . '.';
-                echo "<td>" . $fullName . "</td>";
-
-                echo "</tr>";
+            {
+                global $dbh;
+                $query = "SELECT user_id, login, role, name,surname FROM users JOIN roles ON roles.role_id = users.role_id
+                                                               JOIN education_system.human_data hd on hd.data_id = users.data_id";
+                $result = $dbh->query($query);
+                $result->setFetchMode(PDO::FETCH_ASSOC);
+                $table = "<table class='table  table-hover table-striped'>";
+                $table .= "<thead>
+                            <th class='text-center'>ID</th>
+                            <th class='text-center'>Login</th>
+                            <th class='text-center'>Role</th>
+                            <th class='text-center'>Name</th>
+                            <th class='text-center'>Surname</th>
+                           </thead>";
+                foreach ($result as $row) {
+                    $table .= "<tr>";
+                    $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
+                    $table .= "<td class='text-center'>" . $row['login'] . "</td>";
+                    $table .= "<td class='text-center'>" . $row['role'] . "</td>";
+                    $table .= "<td class='text-center'>" . $row['name'] . "</td>";
+                    $table .= "<td class='text-center'>" . $row['surname'] . "</td>";
+                    $table .= "</tr>";
                 }
+                $table .= "</table>";
+                echo $table;
+            }
 
-                echo "</table>";
-            echo "</div>";
-        } else {
-        echo "<h1>Записи не найдены!</h1>";
-        }
-  ?>
+            ?>
+
         </div>
 
     </div>
+
+
     <div class="tab-pane fade" id="logs-tab-pane" role="tabpanel" aria-labelledby="logs-tab" tabindex="0">...</div>
 
 </div>

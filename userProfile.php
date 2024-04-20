@@ -61,7 +61,7 @@ require_once "Components/footer.php";
             url: "usersService.php",
             data: {"logout": true},
             success: function (data) {
-                console.log(data)
+                // console.log(data)
                 location.href='index.php'
 
             },

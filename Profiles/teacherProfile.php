@@ -13,7 +13,7 @@
     $result = $query->fetchAll();
     $selectedGroupId = $_SESSION['selectedGroupId'] ?? null;
 
-    echo " <option value='' disabled" . ($selectedGroupId === null ? ' selected' : '') . ">Выберите группу:</option>";
+    echo " <option value='' disabled " . ($selectedGroupId === null ? ' selected' : '') . ">Выберите группу:</option>";
     foreach ($result as $group) {
         $selected = $group['group_id'] == $selectedGroupId ? 'selected' : '';
         echo "<OPTION VALUE='" . $group['group_id'] . "' " . $selected . ">" . $group['group_name'] . "</OPTION>";
@@ -24,6 +24,7 @@
 <div id="tableContainer" class="d-flex mt-4 flex-column">
 
 </div>
+<script src="../script.js"></script>
 <script src="../jquery-3.7.1.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -35,35 +36,28 @@
             url: "../Test/renderService.php",
             data: {"groupId": groupId},
             success: function (data) {
-                // console.log('Transmission')
-                if (data['error']) {
-                    this.error(data['error']);
-                } else {
-                    // console.log(data)
-                    let container = $('#tableContainer')
-                    container.empty()
-                    $(data).appendTo(container)
+                const response = JSON.parse(data)
+                if (response['html']) {
+
+                    const $container = $('#tableContainer')
+
+                    $container.html(response['html'])
                 }
 
+
             },
-            error: function (data) {
-                // console.log(data)
-                console.log('An error occurred: ' + data);
-                //Сделать всплывашку с ошибкой
-            },
+            error: ajaxErrorHandling
         });
     }
 
     $(document).ready(function () {
         let value = $('select').val()
-        console.log(value)
         if (value) {
             loadGroupData(value)
         }
 
     })
     $('select').on('change', function () {
-
         loadGroupData(this.value)
     });
 </script>

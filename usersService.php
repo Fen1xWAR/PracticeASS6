@@ -48,6 +48,10 @@ if (isset($_POST['login'])) {
 
 }
 
+
+
+
+
 if (isset($_POST['logout'])) {
     session_start();
     session_unset();

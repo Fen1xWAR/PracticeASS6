@@ -52,6 +52,7 @@ if (isset($_GET['groupId'])) {
 
 
 }
+
 if (isset($_GET["testId"])) {
     session_start();
     $testId = $_GET["testId"];

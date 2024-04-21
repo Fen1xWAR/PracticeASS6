@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -24,8 +25,8 @@
 
                 <form id="loginForm" class="d-flex flex-column  fs-5" action="usersService.php" method="post">
                     <div class="mb-3 ">
-                        <label for="exampleInputEmail"  class="form-label">Логин</label>
-                        <input name="login" type="text" required class="form-control" id="exampleInputEmail" aria-describedby="emailHelp">
+                        <label for="InputEmail"  class="form-label">Email</label>
+                        <input name="email" type="text" required class="form-control" id="InputEmail" aria-describedby="emailHelp">
 
                     </div>
                     <div class="mb-3">
@@ -61,7 +62,7 @@ require_once "Components/footer.php"
 
         let formData = form.serializeArray()
         let data = {
-            login: formData[0].value,
+            email: formData[0].value,
             password: formData[1].value,
         }
         $.ajax({

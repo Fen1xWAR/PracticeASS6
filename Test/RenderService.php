@@ -84,10 +84,12 @@ function createStudentList($data): string
     $html .= '</tr>';
     $indexInGroup = 0;
     foreach ($data as $row) {
+        $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
+
         $indexInGroup++;
         $html .= '<tr data-id="' . $row['id'] . '">';
         $html .= '<td>' . $indexInGroup . '</td>';
-        $html .= '<td>' . ($row['surname'] . " " . substr($row['name'], 0, 2) . ".") . '</td>';
+        $html .= '<td>' . $fullName . '</td>';
         $html .= '</tr>';
     }
 
@@ -261,7 +263,7 @@ function renderTest(array $data): void
 function getStudentListByGroupId($groupId): false|array
 {
     global $dbh;
-    $query = $dbh->prepare("SELECT s.id, h.surname, h.name FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
+    $query = $dbh->prepare("SELECT s.id, h.surname, h.name , h.lastname FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
     $query->bindValue(":groupId", $groupId);
     $query->execute();
     return $query->fetchAll(PDO::FETCH_ASSOC);

@@ -1,4 +1,4 @@
-<select class="form-select" aria-label="Default select example">
+<select class="form-select" data-live-search="true" aria-label="Default select example">
     <?php
     require_once "pdoConnection.php";
 
@@ -10,19 +10,27 @@
     $result = $query->fetchAll();
 
 
-    echo " <option value='' selected disabled >Выберите тест:</option>";
+    echo " <option value='' selected disabled >Выберите раздел:</option>";
     foreach ($result as $test) {
         $testTitle = json_decode($test['data'], true)['Title'];
 
         echo "<OPTION VALUE='" . $test['component_id'] . "' >" . $testTitle . "</OPTION>";
     }
+
+
+
+    $result =  $dbh->query("SELECT block_id, block_name FROM blocks");
+    $result->fetchAll(PDO::FETCH_ASSOC);
     ?>
 </select>
+
 <div class="container mt-4" id="result">
 
 </div>
+
 <script src="../script.js"></script>
 <script src="../jquery-3.7.1.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

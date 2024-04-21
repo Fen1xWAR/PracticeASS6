@@ -23,25 +23,24 @@ require_once "pdoConnection.php";
 
             {
                 global $dbh;
-                $query = "SELECT user_id, login, role, name,surname FROM users JOIN roles ON roles.role_id = users.role_id
+                $query = "SELECT user_id, email, role, name,surname , lastname FROM users JOIN roles ON roles.role_id = users.role_id
                                                                JOIN education_system.human_data hd on hd.data_id = users.data_id";
                 $result = $dbh->query($query);
                 $result->setFetchMode(PDO::FETCH_ASSOC);
                 $table = "<table class='table  table-hover table-striped'>";
                 $table .= "<thead>
                             <th class='text-center'>ID</th>
-                            <th class='text-center'>Login</th>
+                            <th class='text-center'>Email</th>
+                            <th class='text-center'>ФИО</th>
                             <th class='text-center'>Role</th>
-                            <th class='text-center'>Name</th>
-                            <th class='text-center'>Surname</th>
                            </thead>";
                 foreach ($result as $row) {
+                    $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
                     $table .= "<tr>";
                     $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
-                    $table .= "<td class='text-center'>" . $row['login'] . "</td>";
+                    $table .= "<td class='text-center'>" . $row['email'] . "</td>";
+                    $table .= "<td class='text-center'>" . ($fullName) . "</td>";
                     $table .= "<td class='text-center'>" . $row['role'] . "</td>";
-                    $table .= "<td class='text-center'>" . $row['name'] . "</td>";
-                    $table .= "<td class='text-center'>" . $row['surname'] . "</td>";
                     $table .= "</tr>";
                 }
                 $table .= "</table>";

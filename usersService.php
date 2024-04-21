@@ -1,14 +1,14 @@
 <?php
 require_once "pdoConnection.php";
-function CheckLoginData($login, $password): array|string
+function CheckLoginData($email, $password): array|string
 {
     global $dbh;
     try {
-        $query = $dbh->prepare("SELECT user_id, password, roles.role FROM users JOIN roles ON users.role_id = roles.role_id WHERE users.login = :login");
+        $query = $dbh->prepare("SELECT user_id, password, roles.role FROM users JOIN roles ON users.role_id = roles.role_id WHERE users.email = :email");
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
-    $query->bindValue(":login", $login);
+    $query->bindValue(":email", $email);
     $query->execute();
     $result = $query->fetch();
     if ($result > 0 and password_verify($password, $result['password'])) {
@@ -24,11 +24,11 @@ function CheckLoginData($login, $password): array|string
 if (isset($_POST['login'])) {
 
     $logData = $_POST['login'];
-    $login = $logData['login'];
+    $email = $logData['email'];
     $password = $logData['password'];
 
 
-    $data = CheckLoginData($login, $password);
+    $data = CheckLoginData($email, $password);
 
     if (is_string($data)) {
         http_response_code(404);

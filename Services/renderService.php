@@ -363,7 +363,7 @@ function getComponentJson($componentId)
 function downloadImagesByComponentIdToDirectory($component_id): void
 {
     global $dbh;
-    $DIRECTORY = "../assets";
+    $DIRECTORY = "assets";
 
     if (!file_exists($DIRECTORY)) {
         mkdir($DIRECTORY, 0777, true);
@@ -384,11 +384,12 @@ function downloadImagesByComponentIdToDirectory($component_id): void
 function downloadBlockImageById($block_id): void
 {
     global $dbh;
-    $DIRECTORY = "../assets";
+    $DIRECTORY ="assets";
 
     if (!file_exists($DIRECTORY)) {
         mkdir($DIRECTORY, 0777, true);
     }
+
 
     $stmt = $dbh->prepare('SELECT block_image_name, block_image FROM blocks WHERE block_id = :block_id');
     $stmt->bindParam(':block_id', $block_id);
@@ -398,6 +399,7 @@ function downloadBlockImageById($block_id): void
     if ($image) {
         $filename = "block_$block_id.png";
         file_put_contents("$DIRECTORY/$filename", $image['block_image']);
+
     }
 }
 

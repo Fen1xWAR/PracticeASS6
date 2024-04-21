@@ -73,6 +73,7 @@ require_once "Components/footer.php"
 ?>
 </body>
 <script src="../jquery-3.7.1.js"></script>
+<script src="../script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
@@ -88,8 +89,10 @@ require_once "Components/footer.php"
             type: 'GET',
             data: {"componentId": componentId},
             success: function (data) {
+                console.log(data)
+                console.log(JSON.parse(data))
                 const componentData = JSON.parse(data)
-                questions = componentData['questions'];
+                // questions = componentData['questions'];
 
 
                 if (componentData['html']) {
@@ -109,11 +112,7 @@ require_once "Components/footer.php"
                     $('[data-component-id="' + componentId + '"]').addClass('active');
                 }
             },
-            error: function (error) {
-                console.error(error);
-                let errorM = $('<h2>Error loading block.</h2>').appendTo("#container")
-                $('#container').html(errorM);
-            }
+            error: ajaxErrorHandling
         });
     }
 

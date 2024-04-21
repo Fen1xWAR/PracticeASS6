@@ -12,6 +12,7 @@ if (isset($_GET['componentId'])) {
                 $component = json_decode($data['data'], true);
                 $_SESSION['currentComponentData'] = $component;
                 if (isset($component['Images'])) {
+
                     downloadImagesByComponentIdToDirectory($componentId);
                 }
                 $data['type'] == "Lecture" ? renderLecture($componentId, $component) : renderTest($component);
@@ -297,6 +298,7 @@ function renderLecture(int $component_id, array $data): void
         $textBefore = substr($text, 0, $imagePosition);
         $imgElement = "<img style='max-width: 50%;' src='../assets/comp_{$component_id}_$k.png' alt='рисунок'>";
         $imgDivElement = "<div>" . $imgElement . "</div>";
+
         $textElement .= $textBefore . $imgDivElement;
         $text = substr($text, $imagePosition);
     }
@@ -362,17 +364,19 @@ function getComponentJson($componentId)
 
 function downloadImagesByComponentIdToDirectory($component_id): void
 {
+
     global $dbh;
-    $DIRECTORY = "assets";
+    $DIRECTORY = "../assets";
 
     if (!file_exists($DIRECTORY)) {
         mkdir($DIRECTORY, 0777, true);
-    }
 
+    }
     $stmt = $dbh->prepare('SELECT image_name, image_content FROM images WHERE component_id = :component_id');
     $stmt->bindParam(':component_id', $component_id);
     $stmt->execute();
     $images = $stmt->fetchAll();
+
 
     foreach ($images as $index => $image) {
         $index++;

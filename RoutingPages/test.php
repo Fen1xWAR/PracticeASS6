@@ -92,7 +92,7 @@ require_once "Components/footer.php"
                 const componentData = JSON.parse(data)
                 questions = componentData['questions'];
 
-
+                console.log(componentData["questions"])
                 if (componentData['html']) {
                     $container.html(componentData['html']);
                     $header.text(componentData["header"]);
@@ -149,7 +149,7 @@ require_once "Components/footer.php"
 
 
         const questionElement = $('<div class="card-body p-3"></div>');
-        const questionTextElement = $('<p class="card-text" </p>').text(questionText);
+        const questionTextElement = $('<p class="card-text" </p>').html(questionText);
         questionElement.append(questionTextElement);
 
         switch (questionCategory) {

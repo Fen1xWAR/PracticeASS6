@@ -9,7 +9,7 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body class="p-5">
-<form id="form" action="">
+<form id="form" class="w-100" action="">
     <div class="form-group">
         <label for="blockId">
             Id блока
@@ -36,17 +36,22 @@
 </html>
 <script src="../../jquery-3.7.1.js"></script>
 <script !src="">
+    $.ready(function () {
+
+        $("#text").val(' ')
+    })
     let upload = ''
     $("#form").submit(function (e) {
         e.preventDefault()
         e.stopPropagation()
-
+        let lectureText = $("#text").val()
+        lectureText = lectureText.replace(/\n/g, "<br>").trim()
         const data = {
             blockId: $("#blockId").val(),
-            data: JSON.stringify({"Title": $("#title").val(), "Text": $("#text").val()})
+            data: JSON.stringify({"Title": $("#title").val(), "Text":  lectureText})
         }
+        console.log(lectureText)
         upload  = data
-        console.log(data)
         $.ajax({
             url: 'LectionLoader.php',
             type: 'POST',

@@ -486,7 +486,7 @@ function renderBlock($title, $text, $blockId): void
 {
     downloadBlockImageById($blockId);
     $html = <<<HTML
-<div class="card-wrapper d-flex align-items-center justify-content-center col-lg-4 col-md-5 col-xs-12">
+<div class="card-wrapper d-flex align-items-center justify-content-center col-lg-4 col-md-6 col-xs-12">
     <div class="card">
         
         <div class="card-img-wrapper">

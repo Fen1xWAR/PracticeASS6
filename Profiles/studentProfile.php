@@ -1,31 +1,27 @@
 <select class="form-select" data-live-search="true" aria-label="Default select example">
     <?php
-    require_once "pdoConnection.php";
+
 
 
     global $dbh;
 
-    $query = $dbh->prepare("SELECT component_id, data FROM components WHERE type ='Test' ");
-    $query->execute();
-    $result = $query->fetchAll();
 
+    $result = $dbh->query("SELECT block_id, block_name FROM blocks");
+    $blocks = $result->fetchAll(PDO::FETCH_ASSOC);
 
     echo " <option value='' selected disabled >Выберите раздел:</option>";
-    foreach ($result as $test) {
-        $testTitle = json_decode($test['data'], true)['Title'];
+    foreach ($blocks as $block) {
 
-        echo "<OPTION VALUE='" . $test['component_id'] . "' >" . $testTitle . "</OPTION>";
+        echo "<option value='" . $block['block_id'] . "'>" . $block['block_name'] . "</option>";
     }
-
-
-
-    $result =  $dbh->query("SELECT block_id, block_name FROM blocks");
-    $result->fetchAll(PDO::FETCH_ASSOC);
     ?>
 </select>
+<?php
+?>
+<div class="container mt-4" >
+    <div class="accordion p-4"  id="result">
 
-<div class="container mt-4" id="result">
-
+    </div>
 </div>
 
 <script src="../script.js"></script>
@@ -35,18 +31,18 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script>
-    function loadTestResults(testId) {
+    function loadTestResults(blockId) {
         $.ajax({
             type: "GET",
-            url: "../Test/renderService.php",
-            data: {"testId": testId},
+            url: "Services/renderService.php",
+            data: {"sectionId": blockId},
             success: function (data) {
-                let response = JSON.parse(data)
-                if(response["html"]){
+                console.log(data)
+                let response = $.parseJSON(data);
+                if (response["html"]) {
                     const $container = $('#result')
                     $container.html(response['html'])
                 }
-
 
 
             },

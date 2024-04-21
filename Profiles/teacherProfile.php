@@ -2,7 +2,6 @@
 
 
     <?php
-    require_once "pdoConnection.php";
 
 
     global $dbh;
@@ -33,7 +32,7 @@
     function loadGroupData(groupId) {
         $.ajax({
             type: "GET",
-            url: "../Test/renderService.php",
+            url: "Services/renderService.php",
             data: {"groupId": groupId},
             success: function (data) {
                 const response = JSON.parse(data)

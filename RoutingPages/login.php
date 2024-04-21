@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -23,7 +23,7 @@
 
             <div class="col-md-6">
 
-                <form id="loginForm" class="d-flex flex-column  fs-5" action="usersService.php" method="post">
+                <form id="loginForm" class="d-flex flex-column  fs-5" action="../Services/usersService.php" method="post">
                     <div class="mb-3 ">
                         <label for="InputEmail"  class="form-label">Email</label>
                         <input name="email" type="text" required class="form-control" id="InputEmail" aria-describedby="emailHelp">
@@ -49,11 +49,11 @@
 require_once "Components/footer.php"
 ?>
 </body>
-<script src="jquery-3.7.1.js"></script>
+<script src="../jquery-3.7.1.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-<script src="script.js"></script>
+<script src="../script.js"></script>
 <script>
     const form = $("#loginForm")
 
@@ -72,7 +72,7 @@ require_once "Components/footer.php"
             success: function () {
                     form.addClass("was-validated")
                 setTimeout(()=>{
-                    location.href = "userProfile.php"
+                    location.href = "/profile"
                 },800)
 
 

@@ -1,5 +1,5 @@
 <?php
-require_once "../pdoConnection.php";
+require "pdoConnection.php";
 if (isset($_GET['componentId'])) {
     $componentId = $_GET['componentId'];
     session_start();
@@ -31,7 +31,6 @@ if (isset($_GET['componentId'])) {
 
 }
 
-
 if (isset($_POST['userAnswers'])) {
     $userAnswers = $_POST['userAnswers'];
     echo json_encode(["html" => proceedUserAnswers($userAnswers)]);
@@ -42,35 +41,107 @@ if (isset($_GET['groupId'])) {
     $groupId = $_GET['groupId'];
     $_SESSION['selectedGroupId'] = $groupId;
     $studentsData = getStudentListByGroupId($groupId);
-    if(count($studentsData) == 0){
+    if (count($studentsData) == 0) {
 
         echo json_encode(["html" => "<h3 class='text-center'>В данной группе нет учеников</h3>"]);
-    }
-    else{
+    } else {
         echo json_encode(["html" => createStudentList($studentsData)]);
     }
 
 
 }
 
-if (isset($_GET["testId"])) {
+if (isset($_GET['sectionId'])) {
     session_start();
-    $testId = $_GET["testId"];
-    $userId = $_SESSION["userID"];
-    $_SESSION['selectedTestOd'] = $testId;
-    $testResult = getResultByTestAndUserId($testId, $userId);
-    if (count($testResult) == 0) {
-        echo json_encode(["html" => "<h3 class='text-center'>Вы еще не проходили это тестирование</h3>"]);
+    $result = [];
+    $blockId = $_GET['sectionId'];
+    $userId = $_SESSION['userID'];
+    $_SESSION['selectedBlockId'] = $blockId;
+    $dataToRender = getResultByBlockAndUserId($blockId, $userId);
+    if (count($dataToRender) == 0) {
+        echo json_encode(["html" => "<h3 class='text-center'>Вы еще не проходили ни одного теста из данного раздела!</h3>"]);
     } else {
-        $userAnswers = json_decode($testResult['result'], true)["UserAnswers"];
-        $correctAnswers = json_decode($testResult['answers']);
-        $table = generateTestResultTable(['№', "Ваш ответ", "Правильный ответ"], false, $userAnswers, $correctAnswers)['table'];
-
-        echo json_encode(["html" => $table]);
-
+        $accordion = [];
+        $counter = 0;
+        foreach ($dataToRender as $item) {
+            $counter++;
+            $result[] =  createUserResultAccordion($counter, $item);
+        }
+        echo json_encode(["html" =>$result]);
     }
 
+}
 
+
+if (isset($_GET['blockId'])) {
+    session_start();
+    $_SESSION['blockId'] = $_GET['blockId'];
+    header("Location: /section");;
+}
+function getResultByBlockAndUserId($blockId, $userId): array|string
+{
+    global $dbh;
+    $query = $dbh->prepare("SELECT component_id, data from components WHERE block_id=:blockId and type='Test'");
+    $query->bindValue(":blockId", $blockId);
+    $query->execute();
+    $components = $query->fetchAll(PDO::FETCH_ASSOC);
+    if (count($components) == 0) {
+        return [];
+    }
+    $query = $dbh->prepare("SELECT id from students where user_id=:userId");
+    $query->bindValue(":userId", $userId);
+    $query->execute();
+    $studentId = $query->fetch(PDO::FETCH_ASSOC)['id'];
+    $dataToRender = [];
+    foreach ($components as $test) {
+        $testId = $test['component_id'];
+        $testTitle = json_decode($test['data'], true)['Title'];
+        $query = $dbh->prepare('SELECT result, answers from complete_components_by_student JOIN education_system.test_answers ta on complete_components_by_student.component_id = ta.component_id    where complete_components_by_student.component_id=:testId AND student_id=:studentId');
+        $query->bindValue(":testId", $testId);
+        $query->bindValue(":studentId", $studentId);
+        $query->execute();
+        if ($query->rowCount() > 0) {
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+
+            $outputData = ["testId" => $testId, "testTitle" => $testTitle, "testResult" => $result['result'], "answers" => $result['answers']];
+            $dataToRender[] = $outputData;
+        }
+    }
+    return $dataToRender;
+}
+
+
+function createUserResultAccordion($counter, $dataToRender): string
+{
+    $testId = $dataToRender['testId'];
+    $testTitle = $dataToRender['testTitle'];
+    $result = json_decode($dataToRender['testResult'], true);
+    $userAnswers = $result['UserAnswers'];
+    $userResult = $result['UserResult'];
+    $maxResult = $result['MaxResult'];
+    $answers = json_decode($dataToRender['answers']);
+
+    $content = generateTestResultTable(["№", "Ваш ответ"], false, $userAnswers, $answers)['table'];
+    $content .= '<p class="text-center">Количество правильных ответов: ' . $userResult . ' из ' . $maxResult . '</p>';
+    $show = $counter === 1 ? ' show' : '';
+    $collapsed = $counter != 1 ? "collapsed" : '';
+    $accordionItem = <<<EOF
+<div class="accordion-item">
+    <h2 class="accordion-header">
+        <button class="accordion-button {$collapsed}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{$testId}"
+                aria-expanded="true" aria-controls="collapse{$testId}">
+            {$testTitle}
+        </button>
+    </h2>
+    <div id="collapse{$testId}" class="accordion-collapse collapse {$show}" data-bs-parent="#result">
+        <div class="accordion-body overflow-auto">
+            {$content}
+        </div>
+    </div>
+</div>
+EOF;
+
+    return $accordionItem;
 
 }
 
@@ -84,7 +155,7 @@ function createStudentList($data): string
     $html .= '</tr>';
     $indexInGroup = 0;
     foreach ($data as $row) {
-        $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
+        $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
 
         $indexInGroup++;
         $html .= '<tr data-id="' . $row['id'] . '">';
@@ -103,7 +174,7 @@ function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): 
     $columnCount = $isTeacher ? count($columns) : count($columns) - 1;
     $rowCount = count($columns[0]);
 
-    $table = '<table class="table table-bordered table-striped">';
+    $table = '<table class="table table-bordered">';
     $table .= '<thead>';
     $table .= '<tr>';
 
@@ -113,7 +184,6 @@ function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): 
     $table .= '</tr>';
     $table .= '</thead>';
     $table .= '<tbody>';
-
 
 
     // Generate the table rows
@@ -129,7 +199,7 @@ function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): 
         // Add the row number cell
         $table .= '<td class="text-center">' . ($i + 1) . '</td>';
 
-        for ($j = 0; $j < $columnCount;$j++){
+        for ($j = 0; $j < $columnCount; $j++) {
             $table .= '<td class="text-center">' . $columns[$j][$i] . '</td>';
         }
 
@@ -144,17 +214,6 @@ function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): 
     ];
 }
 
-
-
-function getResultByTestAndUserId($testId, $userId): false|array
-{
-    global $dbh;
-    $query = $dbh->prepare('SELECT result, answers, result_date from complete_components_by_student JOIN education_system.test_answers ta on complete_components_by_student.component_id = ta.component_id    where complete_components_by_student.component_id=:testId AND student_id=(SELECT student_id from students where user_id=:userId)');
-    $query->bindValue(":testId", $testId);
-    $query->bindValue(":userId", $userId);
-    $query->execute();;
-    return $query->fetch(PDO::FETCH_ASSOC);
-}
 
 function proceedUserAnswers($userAnswers): string
 {
@@ -176,7 +235,7 @@ function proceedUserAnswers($userAnswers): string
 
     if ($_SESSION['userRole'] === "student") {
 
-        if(checkExistingResult()){
+        if (checkExistingResult()) {
 
             saveUserAnswersToDb([
                 "UserAnswers" => $userAnswers,
@@ -203,7 +262,7 @@ function checkExistingResult(): bool
     $query->bindValue(":component_id", $_SESSION['currentComponentId']);
     $query->bindValue(":user_id", $_SESSION['userID']);
     $query->execute();
-    if ($query->rowCount()== 0){
+    if ($query->rowCount() == 0) {
         return true;
     }
     return false;
@@ -242,7 +301,7 @@ function renderLecture(int $component_id, array $data): void
 
     $textElement .= htmlspecialchars($text) . "\n";
 
-    echo json_encode(["header"=>$data['Title'] ,"html" => $textElement]);
+    echo json_encode(["header" => $data['Title'], "html" => $textElement]);
 }
 
 function renderTest(array $data): void
@@ -254,10 +313,8 @@ function renderTest(array $data): void
     $footer = "<button type='button' onclick='displayQuestion(0)' " . ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Старт</button>\n";
 
 
-    echo json_encode([ "header"=>$data['Title'],"html" => $textElement, "questions" => $data["Questions"], "footer"=> $footer]);
+    echo json_encode(["header" => $data['Title'], "html" => $textElement, "questions" => $data["Questions"], "footer" => $footer]);
 }
-
-
 
 
 function getStudentListByGroupId($groupId): false|array
@@ -361,6 +418,7 @@ function renderBlock($title, $text, $blockId): void
     $html = <<<HTML
 <div class="card-wrapper d-flex align-items-center justify-content-center col-lg-4 col-md-5 col-xs-12">
     <div class="card">
+        
         <div class="card-img-wrapper">
             <img class="card-img-top" src="/assets/block_$blockId.png" alt="Card image cap">
         </div>
@@ -371,7 +429,11 @@ function renderBlock($title, $text, $blockId): void
                 
             </div>
         </div>
-        <a href="test.php?blockId=$blockId" class="hidden-link stretched-link">Пройти тему</a>
+        <form action="Services/renderService.php" id="$blockId" method="get">
+        <input  type="hidden" name="blockId" value="$blockId">
+        </form>
+        <a  onclick="$('#$blockId').submit()" class="hidden-link stretched-link">Пройти тему</a>
+        
     </div>
 </div>
 HTML;

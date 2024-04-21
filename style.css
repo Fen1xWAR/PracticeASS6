@@ -1,8 +1,8 @@
 body{
-    background-image: url('bg.jpg');
+    background-image: url('assets/StockImg/bg.jpg');
 }
 #regContainer{
-    background-image: url('visa_bg.jpg');
+    background-image: url('assets/StockImg/visa_bg.jpg');
     /* Add the blur effect */
     backdrop-filter: blur(8px)  brightness(50%);
 

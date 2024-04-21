@@ -8,7 +8,7 @@
     <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css”/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <script src="../jquery-3.7.1.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -24,17 +24,17 @@ require_once "Components/header.php";
         <div class="container flex-grow-1" id="content">
             <?php
             if (!isset($_SESSION['userRole'])){
-                header("Location: login.php");
+                header("Location: /login");
             }
             switch ($_SESSION['userRole']) {
                 case 'student':
-                    require_once "Profiles/studentProfile.php";
+                    require "Profiles/studentProfile.php";
                     break;
                 case 'teacher':
-                    require_once "Profiles/teacherProfile.php";
+                    require "Profiles/teacherProfile.php";
                     break;
                 case 'admin':
-                    require_once "Profiles/adminProfile.php";
+                    require "Profiles/adminProfile.php";
                     break;
                 default :
                     exit();
@@ -62,11 +62,11 @@ require_once "Components/footer.php";
     $("#logout").click(function () {
         $.ajax({
             type: "POST",
-            url: "usersService.php",
+            url: "Services/usersService.php",
             data: {"logout": true},
             success: function (data) {
                 // console.log(data)
-                location.href='index.php'
+                location.href='/'
 
             },
             error: function (data) {

@@ -14,7 +14,10 @@
 </head>
 
 <?php
-require_once "../Components/header.php"
+require_once "Components/header.php";
+if(!isset($_SESSION['blockId'])){
+    header("Location: /education");
+}
 ?>
 <body class="d-flex flex-column min-vh-100">
 
@@ -27,10 +30,12 @@ require_once "../Components/header.php"
                     <ul id="nav-items" class="nav p-0 flex-column align-items-center">
 
                         <?php
-                        require_once "RenderService.php";
-                        if (isset($_GET['blockId'])) {
+                        require "Services/renderService.php";
 
-                            $blockStructure = getBLockStructure($_GET['blockId']);
+                        if (isset($_SESSION['blockId'])) {
+
+
+                            $blockStructure = getBLockStructure($_SESSION['blockId']);
                             foreach ($blockStructure as $block) {
                                 generateNavButton($block['type'], $block['component_id']);
                             }
@@ -64,7 +69,7 @@ require_once "../Components/header.php"
 </div>
 
 <?php
-require_once "../Components/footer.php"
+require_once "Components/footer.php"
 ?>
 </body>
 <script src="../jquery-3.7.1.js"></script>
@@ -79,7 +84,7 @@ require_once "../Components/footer.php"
     const $header = $('#header')
     function loadComponent(componentId) {
         $.ajax({
-            url: 'RenderService.php',
+            url: 'Services/renderService.php',
             type: 'GET',
             data: {"componentId": componentId},
             success: function (data) {
@@ -125,7 +130,7 @@ require_once "../Components/footer.php"
         })
         $.ajax({
             type: "POST",
-            url: 'renderService.php',
+            url: 'Services/renderService.php',
             data: {"userAnswers": userAnswers},
             success: function (data) {
                 const response = JSON.parse(data)
@@ -211,12 +216,10 @@ require_once "../Components/footer.php"
 
         const backButton = $('<button type="button" id="backButton"  class="btn btn-primary">Назад</button>');
         backButton.click(() => {
-            console.log(typeof (userAnswers[currentQuestionNumber]))
             Array.isArray(userAnswers[currentQuestionNumber]) ? userAnswers[currentQuestionNumber].sort().join('') : userAnswers[currentQuestionNumber]
             currentQuestionNumber--;
             userAnswers[currentQuestionNumber] = []
             displayQuestion(currentQuestionNumber);
-            console.log(currentQuestionNumber)
             if (currentQuestionNumber === 0) {
                 $("#backButton").prop('disabled', true)
             }
@@ -230,7 +233,6 @@ require_once "../Components/footer.php"
 
         const nextButton = $('<button type="button" id="nextButton" class="btn btn-primary ">Далее</button>');
         nextButton.click(() => {
-            console.log(typeof (userAnswers[currentQuestionNumber]))
 
             currentQuestionNumber++;
             if (questionCategory === 0) {

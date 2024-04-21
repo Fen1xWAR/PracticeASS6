@@ -13,14 +13,14 @@
     <title>Document</title>
 </head>
 <?php
-require_once "../Components/header.php"
+require_once "Components/header.php"
 ?>
 <body class="d-flex flex-column min-vh-100">
 <div class="container-fluid d-flex   flex-grow-1">
     <div class="container-xxl align-self-center  mt-5">
         <div class="row">
             <?php
-            require_once "RenderService.php";
+            require_once "Services/renderService.php";
             $blocks = getAllBlocks();
             foreach ($blocks as $block) {
 
@@ -40,13 +40,18 @@ require_once "../Components/header.php"
 
 
 <?php
-require_once "../Components/footer.php"
+require_once "Components/footer.php"
 ?>
 </body>
 
 </html>
-<script src="../jquery-3.7.1.js"></script>
+<script src="jquery-3.7.1.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+
+<script>
+    $.ajax()
+</script>
 <?php

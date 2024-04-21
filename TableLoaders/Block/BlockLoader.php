@@ -39,7 +39,7 @@ $stmt->bindParam(':block_image', $image_content);
 $stmt->execute();
 
 // Redirect to the upload form
-header('Location: BlockForm.html');
+header('Location: BlockImageLoader.html');
 exit;
 
 ?>

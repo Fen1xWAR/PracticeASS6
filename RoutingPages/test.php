@@ -89,8 +89,6 @@ require_once "Components/footer.php"
             type: 'GET',
             data: {"componentId": componentId},
             success: function (data) {
-                console.log(data)
-                console.log(JSON.parse(data))
                 const componentData = JSON.parse(data)
                 questions = componentData['questions'];
 

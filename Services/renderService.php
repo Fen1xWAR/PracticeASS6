@@ -43,14 +43,10 @@ if (isset($_GET['groupId'])) {
     $groupId = $groupArr['groupId'];
     $blockId = $groupArr['blockId'];
     $_SESSION['selectedGroupId'] = $groupId;
-//    var_dump(getStudentListByGroupId($groupId, $blockId));
     $studentResult = getStudentListByGroupId($groupId, $blockId);
 
 
-
-
-
-        echo json_encode(["html" => createStudentList(["№","ФИО","Test_1","Test_2"], $studentResult)]);
+    echo json_encode(["html" => createStudentList($studentResult)]);
 
 
 
@@ -111,6 +107,7 @@ function getResultByBlockAndUserId($blockId, $userId): array|string
             $outputData = ["testId" => $testId, "testTitle" => $testTitle, "testResult" => $result['result'], "answers" => $result['answers']];
             $dataToRender[] = $outputData;
         }
+
     }
     return $dataToRender;
 }
@@ -150,12 +147,12 @@ EOF;
 
 }
 
-function createStudentList($headers, $data): string
+function createStudentList($data): string
 {
 
     $html = '<table class="table table-stripped table-hover">';
     $html .= '<tr>';
-
+    $headers = $data[0];
     foreach ($headers as $header) {
         $html .= '<th class="table-primary text-center">' . $header . '</th>';
     }
@@ -169,7 +166,7 @@ function createStudentList($headers, $data): string
         // Add the row number cell
         $html .= '<td class="text-center">' . ($i + 1) . '</td>';
 
-        for ($j = 0; $j < $columnCount; $j++) {
+        for ($j = 1; $j < $columnCount; $j++) {
             $html .= '<td class="text-center">' . $data[$j][$i] . '</td>';
         }
 
@@ -178,23 +175,7 @@ function createStudentList($headers, $data): string
     }
 
 
-//    $html = '<table class="table table-stripped table-hover">';
-//    $html .= '<tr>';
-//    $html .= '<th>№</th>';
-//    $html .= '<th>ФИО</th>';
-//    $html .= '</tr>';
-//    $indexInGroup = 0;
-//    foreach ($data as $row) {
-//        $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
-//
-//        $indexInGroup++;
-//        $html .= '<tr data-id="' . $row['id'] . '">';
-//        $html .= '<td>' . $indexInGroup . '</td>';
-//        $html .= '<td>' . $fullName . '</td>';
-//        $html .= '</tr>';
-//    }
-//
-//    $html .= '</table>';
+
     return $html;
 }
 
@@ -318,6 +299,7 @@ function renderLecture(int $component_id, array $data): void
 
     $images = $data['Images'] ?? [];
     $text = $data['Text'];
+
     $k = 0;
     foreach ($images as $image) {
         $k += 1;
@@ -330,7 +312,7 @@ function renderLecture(int $component_id, array $data): void
         $text = substr($text, $imagePosition);
     }
 
-    $textElement .= htmlspecialchars($text) . "\n";
+    $textElement .=  $text . "\n";
 
     echo json_encode(["header" => $data['Title'], "html" => $textElement]);
 }
@@ -357,9 +339,15 @@ function getStudentListByGroupId($groupId,$blockId): false|array
     $query->bindValue(':blockId',$blockId);
     $query->execute();
 
+    $testData = $query->fetchAll(PDO::FETCH_ASSOC);
+    $testIdsInBlock = array_values(array_column($testData, 'component_id'));
 
-    $testIdsInBlock = array_values(array_column($query->fetchAll(PDO::FETCH_ASSOC), 'component_id'));
+    $testsDataArray  = array_values(array_column($testData,"data"));
 
+    $headersArray = ['№',"ФИО"];
+    foreach ($testsDataArray as $testData) {
+            $headersArray[] = json_decode($testData, true)['Title'];
+    }
     if (count($testIdsInBlock)==0){
         return  [];
     }
@@ -372,9 +360,10 @@ function getStudentListByGroupId($groupId,$blockId): false|array
     $studentIdsInGroup = array_values(array_column($studentData, "id"));
     $studentFullNameInGroup = [];
     foreach ($studentData as $student) {
-        $studentFullNameInGroup[] = $student['surname'] . ' ' . substr($student['name'], 0, 2) . ' ' . substr($student['lastname'], 0, 2);
+        $studentFullNameInGroup[] = $student['surname'] . ' ' . substr($student['name'], 0, 2) . '.' . substr($student['lastname'], 0, 2).'.';
     }
     $dataToRender = [];
+    $dataToRender[] = $headersArray;
     $dataToRender[] = $studentFullNameInGroup;
     //достаем результаты тестов по каждому студенту
     for ($i = 0; $i < count($testIdsInBlock); $i++) {
@@ -398,13 +387,13 @@ function getStudentListByGroupId($groupId,$blockId): false|array
         }
         $dataToRender[] = $testData;
 
-    }
 
+    }
     return $dataToRender;
 }
 
 
-function getComponentJson($componentId)
+function getComponentJson($componentId): mixed
 {
 
     global $dbh;

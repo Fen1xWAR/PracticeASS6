@@ -30,6 +30,5 @@ function ajaxErrorHandling(xhr) {
     console.error(xhr.responseText)
     const errorMessage = JSON.parse(xhr.responseText).message;
     Notification(errorMessage).show();
-    console.log('An error occurred: ' + errorMessage);
 
 }

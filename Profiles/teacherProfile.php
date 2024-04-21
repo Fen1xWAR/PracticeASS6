@@ -37,7 +37,7 @@ foreach ($result as $block) {
 
 </select>
 </div>
-<div id="tableContainer" class="d-flex mt-4 flex-column">
+<div id="tableContainer" class="d-flex overflow-auto mt-4 flex-column">
 
 </div>
 <script src="../script.js"></script>
@@ -58,7 +58,6 @@ foreach ($result as $block) {
                         "blockId" : blockId
                 }},
             success: function (data) {
-                console.log(data)
                 const response = JSON.parse(data)
                 if (response['html']) {
 

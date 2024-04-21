@@ -60,10 +60,10 @@ require_once "Components/header.php";
     <div class="container-fluid d-flex flex-grow-1 flex-column p-4 ">
         <div id="regContainer" class="row  border border-info h-100 p-4 rounded-4" style="flex: 1">
 
-            <div class="col-md-8 d-flex justify-content-center align-items-center">
+            <div class="col-md-7 d-flex justify-content-center   align-items-center">
                 <h1 class="text-white text-center">Еще не с нами? Присоединяйся сейчас!</h1>
             </div>
-            <div class="text-white p-5 col-md-4 rounded-5 bg-primary">
+            <div class="text-white p-5 col-md-5 rounded-5 bg-primary">
                 <p class="fs-4 text-break text-center">Регистрация</p>
                 <form id="formReg" class=" d-flex flex-column" action="">
                     <div class="mb-3">
@@ -83,7 +83,7 @@ require_once "Components/header.php";
                         <input type="password" class="form-control form-control-sm" id="passwordRepeat">
                     </div>
 
-                    <button type="submit" class="btn btn-light w-50 align-self-center">Зарегистрироваться</button>
+                    <button type="submit" class="btn btn-light    align-self-center">Зарегистрироваться</button>
                 </form>
             </div>
         </div>

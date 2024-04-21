@@ -1,4 +1,7 @@
-<select class="form-select" aria-label="Default select example">
+<div id="select-container" class="container-xxl d-flex flex-column align-items-center   ">
+
+
+<select id="group-select" class="form-select w-50" aria-label="Выбор группы">
 
 
     <?php
@@ -20,6 +23,20 @@
     ?>
 
 </select>
+<select class="form-select mt-3 d-none w-50" id="block-select" aria-label="Выбор раздела">
+<?php
+$query = $dbh->prepare("SELECT block_id, block_name FROM blocks");
+$query->execute();
+$result = $query->fetchAll();
+
+echo " <option value='' selected disabled >Выберите раздел:</option>";
+foreach ($result as $block) {
+    echo "<OPTION VALUE='" . $block['block_id']. "'>" . $block['block_name'] . "</OPTION>";
+}
+?>
+
+</select>
+</div>
 <div id="tableContainer" class="d-flex mt-4 flex-column">
 
 </div>
@@ -29,19 +46,26 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script>
-    function loadGroupData(groupId) {
+    const $blockSelect = $('#block-select')
+    const $groupSelect = $('#group-select')
+    let groupId;
+    function loadGroupData(groupId,blockId) {
         $.ajax({
             type: "GET",
             url: "Services/renderService.php",
-            data: {"groupId": groupId},
+            data: {"groupId": {
+                        "groupId" : groupId,
+                        "blockId" : blockId
+                }},
             success: function (data) {
-                const response = JSON.parse(data)
-                if (response['html']) {
-
-                    const $container = $('#tableContainer')
-
-                    $container.html(response['html'])
-                }
+                console.log(data)
+                // const response = JSON.parse(data)
+                // if (response['html']) {
+                //
+                //     const $container = $('#tableContainer')
+                //
+                //     $container.html(response['html'])
+                // }
 
 
             },
@@ -50,13 +74,18 @@
     }
 
     $(document).ready(function () {
-        let value = $('select').val()
-        if (value) {
-            loadGroupData(value)
+        let value = $groupSelect.val()
+        if (value){
+            groupId = value;
+            $blockSelect.addClass('d-block').removeClass('d-none')
         }
 
     })
-    $('select').on('change', function () {
-        loadGroupData(this.value)
+    $groupSelect.on('change', function () {
+        groupId = this.value
+        $blockSelect.addClass('d-block').removeClass('d-none')
     });
+    $blockSelect.on('change',function (){
+        loadGroupData(groupId,this.value)
+    })
 </script>

@@ -10,10 +10,8 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../style.css">
     <script src="../jquery-3.7.1.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-<!--    <link rel="stylesheet" href="components.css">-->
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <title>Личный кабинет   </title>
 </head>
 <body class="d-flex flex-column min-vh-100">
 <?php
@@ -21,9 +19,9 @@ require_once "Components/header.php";
 ?>
 <div class="container-fluid d-flex  flex-grow-1">
     <div class="container-xxl d-flex  flex-column p-5">
-        <div class="container flex-grow-1" id="content">
+        <div class="container-md flex-grow-1 p-3 rounded-5 border border-info bg-light" id="content">
             <?php
-            if (!isset($_SESSION['userRole'])){
+            if (!isset($_SESSION['userRole'])) {
                 header("Location: /login");
             }
             switch ($_SESSION['userRole']) {
@@ -41,7 +39,7 @@ require_once "Components/header.php";
             }
             ?>
         </div>
-        <div class="container d-flex justify-content-center align-items-center" id="btns">
+        <div class="container mt-2 d-flex justify-content-center align-items-center" id="btns">
             <button class="btn btn-primary mw-25" id="logout">Выйти</button>
         </div>
 
@@ -66,7 +64,7 @@ require_once "Components/footer.php";
             data: {"logout": true},
             success: function (data) {
                 // console.log(data)
-                location.href='/'
+                location.href = '/'
 
             },
             error: function (data) {

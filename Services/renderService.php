@@ -38,15 +38,17 @@ if (isset($_POST['userAnswers'])) {
 
 if (isset($_GET['groupId'])) {
     session_start();
-    $groupId = $_GET['groupId'];
+    $groupArr = $_GET['groupId'];
+    $groupId = $groupArr['groupId'];
+    $blockId = $groupArr['blockId'];
     $_SESSION['selectedGroupId'] = $groupId;
-    $studentsData = getStudentListByGroupId($groupId);
-    if (count($studentsData) == 0) {
-
-        echo json_encode(["html" => "<h3 class='text-center'>В данной группе нет учеников</h3>"]);
-    } else {
-        echo json_encode(["html" => createStudentList($studentsData)]);
-    }
+     getStudentListByGroupId($groupId,$blockId);
+//    if (count($studentsData) == 0) {
+//
+//        echo json_encode(["html" => "<h3 class='text-center'>В данной группе нет учеников</h3>"]);
+//    } else {
+//        echo json_encode(["html" => createStudentList($studentsData)]);
+//    }
 
 
 }
@@ -317,13 +319,33 @@ function renderTest(array $data): void
 }
 
 
-function getStudentListByGroupId($groupId): false|array
+function getStudentListByGroupId($groupId,$blockId): false|array
 {
+
     global $dbh;
-    $query = $dbh->prepare("SELECT s.id, h.surname, h.name , h.lastname FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
-    $query->bindValue(":groupId", $groupId);
+    //определяем тесты в блоке
+    $query = $dbh->prepare("select components.component_id from components WHERE type= 'test' and block_id = :blockId");
+    $query->bindValue(':blockId',$blockId);
     $query->execute();
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $testIdsInBlock = array_values(array_column($query->fetchAll(PDO::FETCH_ASSOC), 'component_id'));
+
+
+    if (count($testIdsInBlock)==0){
+        return  [];
+    }
+    //ищем студентов в группе и их данные
+    $query = $dbh->prepare("SELECT s.id, h.surname, h.name , h.lastname FROM human_data h JOIN users u ON h.data_id = u.data_id JOIN students s ON u.user_id = s.user_id WHERE s.group_id = :groupId ORDER BY h.surname");
+    $query->bindValue(':groupId',$groupId);
+    $query->execute();
+    $studentData = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $studentIdsInGroup = array_values(array_column($studentData, "id"));
+
+    //достаем результаты тестов по каждому студенту
+
+    return [];
 }
 
 

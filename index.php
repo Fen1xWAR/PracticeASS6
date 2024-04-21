@@ -1,7 +1,9 @@
+
+<link rel="icon" type="image/x-icon" href="assets/StockImg/favicon.ico">
+
 <?php
 require_once "Services/pdoConnection.php";
 $request = $_SERVER["REQUEST_URI"];
-//echo $request;
 switch ($request) {
     case "/":
 
@@ -20,5 +22,9 @@ switch ($request) {
     case "/section":
         require "RoutingPages/test.php";
         break;
+    default:
+        require "RoutingPages/404.php";
+        break;
+
 
 }

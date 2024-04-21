@@ -43,13 +43,15 @@ if (isset($_GET['groupId'])) {
     $groupId = $groupArr['groupId'];
     $blockId = $groupArr['blockId'];
     $_SESSION['selectedGroupId'] = $groupId;
-     getStudentListByGroupId($groupId,$blockId);
-//    if (count($studentsData) == 0) {
-//
-//        echo json_encode(["html" => "<h3 class='text-center'>В данной группе нет учеников</h3>"]);
-//    } else {
-//        echo json_encode(["html" => createStudentList($studentsData)]);
-//    }
+//    var_dump(getStudentListByGroupId($groupId, $blockId));
+    $studentResult = getStudentListByGroupId($groupId, $blockId);
+
+
+
+
+
+        echo json_encode(["html" => createStudentList(["№","ФИО","Test_1","Test_2"], $studentResult)]);
+
 
 
 }
@@ -148,26 +150,51 @@ EOF;
 
 }
 
-function createStudentList($data): string
+function createStudentList($headers, $data): string
 {
 
     $html = '<table class="table table-stripped table-hover">';
     $html .= '<tr>';
-    $html .= '<th>№</th>';
-    $html .= '<th>ФИО</th>';
-    $html .= '</tr>';
-    $indexInGroup = 0;
-    foreach ($data as $row) {
-        $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
 
-        $indexInGroup++;
-        $html .= '<tr data-id="' . $row['id'] . '">';
-        $html .= '<td>' . $indexInGroup . '</td>';
-        $html .= '<td>' . $fullName . '</td>';
-        $html .= '</tr>';
+    foreach ($headers as $header) {
+        $html .= '<th class="table-primary text-center">' . $header . '</th>';
+    }
+    $html.= "</tr>";
+
+    $columnCount = count($data);
+    $rowCount = count($data[0]);
+    for ($i = 0; $i < $rowCount; $i++) {
+
+
+        // Add the row number cell
+        $html .= '<td class="text-center">' . ($i + 1) . '</td>';
+
+        for ($j = 0; $j < $columnCount; $j++) {
+            $html .= '<td class="text-center">' . $data[$j][$i] . '</td>';
+        }
+
+
+        $html.= '</tr>';
     }
 
-    $html .= '</table>';
+
+//    $html = '<table class="table table-stripped table-hover">';
+//    $html .= '<tr>';
+//    $html .= '<th>№</th>';
+//    $html .= '<th>ФИО</th>';
+//    $html .= '</tr>';
+//    $indexInGroup = 0;
+//    foreach ($data as $row) {
+//        $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
+//
+//        $indexInGroup++;
+//        $html .= '<tr data-id="' . $row['id'] . '">';
+//        $html .= '<td>' . $indexInGroup . '</td>';
+//        $html .= '<td>' . $fullName . '</td>';
+//        $html .= '</tr>';
+//    }
+//
+//    $html .= '</table>';
     return $html;
 }
 
@@ -326,13 +353,12 @@ function getStudentListByGroupId($groupId,$blockId): false|array
 
     global $dbh;
     //определяем тесты в блоке
-    $query = $dbh->prepare("select components.component_id from components WHERE type= 'test' and block_id = :blockId");
+    $query = $dbh->prepare("select components.component_id, data from components WHERE type= 'test' and block_id = :blockId");
     $query->bindValue(':blockId',$blockId);
     $query->execute();
 
 
     $testIdsInBlock = array_values(array_column($query->fetchAll(PDO::FETCH_ASSOC), 'component_id'));
-
 
     if (count($testIdsInBlock)==0){
         return  [];
@@ -344,10 +370,37 @@ function getStudentListByGroupId($groupId,$blockId): false|array
     $studentData = $query->fetchAll(PDO::FETCH_ASSOC);
 
     $studentIdsInGroup = array_values(array_column($studentData, "id"));
-
+    $studentFullNameInGroup = [];
+    foreach ($studentData as $student) {
+        $studentFullNameInGroup[] = $student['surname'] . ' ' . substr($student['name'], 0, 2) . ' ' . substr($student['lastname'], 0, 2);
+    }
+    $dataToRender = [];
+    $dataToRender[] = $studentFullNameInGroup;
     //достаем результаты тестов по каждому студенту
+    for ($i = 0; $i < count($testIdsInBlock); $i++) {
+        $testData = [];
+        for ($j = 0; $j < count($studentIdsInGroup); $j++) {
+            $query = $dbh->prepare("SELECT result, result_date from complete_components_by_student where component_id = :componentId and student_id = :studentId");
+            $query->bindValue(':componentId', $testIdsInBlock[$i]);
+            $query->bindValue(':studentId', $studentIdsInGroup[$j]);
+            $query->execute();
+            if ($query->rowCount() == 0) {
+                $testData[$j] = '';
+            } else {
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+                $userResultData = json_decode($result['result'], true);
+                $userResult = $userResultData["UserResult"];
+                $MaxResult = $userResultData["MaxResult"];
+                $testData[$j] = $userResult . "/" . $MaxResult;
 
-    return [];
+            }
+
+        }
+        $dataToRender[] = $testData;
+
+    }
+
+    return $dataToRender;
 }
 
 

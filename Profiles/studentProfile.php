@@ -37,7 +37,7 @@
             url: "Services/renderService.php",
             data: {"sectionId": blockId},
             success: function (data) {
-                console.log(data)
+
                 let response = $.parseJSON(data);
                 if (response["html"]) {
                     const $container = $('#result')

@@ -92,7 +92,7 @@ require_once "Components/footer.php"
                 console.log(data)
                 console.log(JSON.parse(data))
                 const componentData = JSON.parse(data)
-                // questions = componentData['questions'];
+                questions = componentData['questions'];
 
 
                 if (componentData['html']) {

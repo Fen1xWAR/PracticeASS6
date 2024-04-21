@@ -59,13 +59,13 @@ foreach ($result as $block) {
                 }},
             success: function (data) {
                 console.log(data)
-                // const response = JSON.parse(data)
-                // if (response['html']) {
-                //
-                //     const $container = $('#tableContainer')
-                //
-                //     $container.html(response['html'])
-                // }
+                const response = JSON.parse(data)
+                if (response['html']) {
+
+                    const $container = $('#tableContainer')
+
+                    $container.html(response['html'])
+                }
 
 
             },

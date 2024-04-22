@@ -16,6 +16,9 @@ switch ($request) {
     case "/login":
         require "RoutingPages/login.php";
         break;
+    case "/register":
+        require "RoutingPages/register.php";
+        break;
     case "/education":
         require "RoutingPages/blocks.php";
         break;

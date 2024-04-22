@@ -65,25 +65,30 @@ require_once "Components/header.php";
             </div>
             <div class="text-white p-5 col-md-5 rounded-5 bg-primary">
                 <p class="fs-4 text-break text-center">Регистрация</p>
-                <form id="formReg" class=" d-flex flex-column" action="">
+                <form id="formReg" class=" d-flex flex-column" action="../Services/usersService.php" method="post">
                     <div class="mb-3">
-                        <label for="fullName" class="form-label">ФИО</label>
-                        <input type="text" class="form-control form-control-sm " id="fullName" aria-describedby="emailHelp">
+                        <label for="surname" class="form-label">Фамилия</label>
+                        <input type="text" required name="surname" class="form-control form-control-sm " id="surname"
+                               aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Имя</label>
+                        <input type="text" required name="name" class="form-control form-control-sm " id="name"
+                               aria-describedby="emailHelp">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Отчество (при наличие)</label>
+                        <input type="text" name="lastname" class="form-control form-control-sm " id="lastname"
+                               aria-describedby="emailHelp">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control form-control-sm " id="email" aria-describedby="emailHelp">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Пароль</label>
-                        <input type="password" class="form-control form-control-sm" id="password">
-                    </div>
-                    <div class="mb-3">
-                        <label for="passwordRepeat" class="form-label">Повторите пароль</label>
-                        <input type="password" class="form-control form-control-sm" id="passwordRepeat">
+                        <input type="email" required name="email" class="form-control form-control-sm " id="email" aria-describedby="emailHelp">
                     </div>
 
-                    <button type="submit" class="btn btn-light    align-self-center">Зарегистрироваться</button>
+
+                    <button type="submit" class="btn btn-light  align-self-center   ">Зарегистрироваться</button>
                 </form>
             </div>
         </div>
@@ -101,5 +106,37 @@ require_once "Components/footer.php";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+<script>
+    const form = $("#formReg")
+    form.submit(function (e) {
+        e.preventDefault()
+        let formData = form.serializeArray()
+        console.log(formData)
+        let data = {
+            email: formData[3].value,
+            surname: formData[0].value,
+            name: formData[1].value,
+            lastname : formData[2].value,
+        }
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: {"dataToRegisterRedirect": data},
+            success: function (data) {
+                console.log(data)
+                form.addClass("was-validated")
+                setTimeout(() => {
+                    location.href = "/register"
+                }, 800)
+
+
+            },
+            error: ajaxErrorHandling
+
+
+        });
+
+    })
+</script>
 </html>
 <?php

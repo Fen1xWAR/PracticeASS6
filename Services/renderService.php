@@ -316,6 +316,59 @@ function renderLecture(int $component_id, array $data): void
 
     echo json_encode(["header" => $data['Title'], "html" => $textElement]);
 }
+function renderUsersTable(): void
+
+{
+    global $dbh;
+    $query = "SELECT user_id, email, role, name,surname , lastname FROM users JOIN roles ON roles.role_id = users.role_id
+                                                               JOIN education_system.human_data hd on hd.data_id = users.data_id";
+    $result = $dbh->query($query);
+    $result->setFetchMode(PDO::FETCH_ASSOC);
+    $table = "<table class='table  table-hover table-striped'>";
+    $table .= "<thead>
+                            <th class='text-center'>ID</th>
+                            <th class='text-center'>Email</th>
+                            <th class='text-center'>ФИО</th>
+                            <th class='text-center'>Role</th>
+                           </thead>";
+    foreach ($result as $row) {
+        $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
+        $table .= "<tr>";
+        $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
+        $table .= "<td class='text-center'>" . $row['email'] . "</td>";
+        $table .= "<td class='text-center'>" . ($fullName) . "</td>";
+        $table .= "<td class='text-center'>" . $row['role'] . "</td>";
+        $table .= "</tr>";
+    }
+    $table .= "</table>";
+    echo $table;
+}
+
+function renderLogsTable(): void
+{
+
+    global $dbh;
+    $query = "SELECT log_id, email, logIn_dateTime FROM userLogs JOIN education_system.users u on userLogs.user_Id = u.user_id ORDER BY logIn_dateTime desc ";
+    $logs = $dbh->query($query);
+    $logs->setFetchMode(PDO::FETCH_ASSOC);
+    $table = "<table class='table  table-hover table-striped'>";
+    $table .= "<thead>
+                            <th class='text-center'>ID</th>
+                            <th class='text-center'>Email</th>
+                            <th class='text-center'>Дата/время входа</th>
+                           </thead>";
+    foreach ($logs as $log) {
+        $datetime = new DateTime($log['logIn_dateTime']);
+        $formatted_datetime = $datetime->format("d/m/y H:i");
+        $table .= "<tr>";
+        $table .= "<td class='text-center'>" . $log['log_id'] . "</td>";
+        $table .= "<td class='text-center'>" . $log['email'] . "</td>";
+        $table .= "<td class='text-center'>" . $formatted_datetime . "</td>";
+        $table .= "</tr>";
+    }
+    $table .= "</table>";
+    echo $table;
+}
 
 function renderTest(array $data): void
 {
@@ -490,7 +543,7 @@ function renderBlock($title, $text, $blockId): void
     <div class="card">
         
         <div class="card-img-wrapper">
-            <img class="card-img-top" src="/assets/block_$blockId.png" alt="Card image cap">
+            <img class="card-img-top" width="320" height="320" src="/assets/block_$blockId.png" alt="Card image cap">
         </div>
         <div class="card-body d-flex flex-column ">
             <h5 class="card-title"><u>$title</u> </h5>

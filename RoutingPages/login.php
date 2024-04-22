@@ -26,14 +26,14 @@
                 <form id="loginForm" class="d-flex flex-column  fs-5" action="../Services/usersService.php" method="post">
                     <div class="mb-3 ">
                         <label for="InputEmail"  class="form-label">Email</label>
-                        <input name="email" type="text" required class="form-control" id="InputEmail" aria-describedby="emailHelp">
+                        <input name="email" type="text" required class="form-control" id="InputEmail" >
 
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword" class="form-label">Пароль</label>
-                        <input name="password" required type="password" class="form-control" id="exampleInputPassword">
+                        <input name="password" required type="password" class="form-control"  id="exampleInputPassword">
 
-                        <div id="passwordHelp" class="form-text">Никому не сообщайте ваш пароль.</div>
+
                     </div>
 
                     <button type="submit" class="btn btn-primary">Войти</button>

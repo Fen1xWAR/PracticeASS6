@@ -15,37 +15,11 @@ require_once "Services/pdoConnection.php";
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active " id="users-tab-pane" role="tabpanel" aria-labelledby="users-tab" tabindex="0">
-        <div class="overflow-auto" style="height: 450px">
+        <div class="overflow-auto">
 
             <?php
+            require_once "Services/renderService.php";
             renderUsersTable();
-            function renderUsersTable()
-
-            {
-                global $dbh;
-                $query = "SELECT user_id, email, role, name,surname , lastname FROM users JOIN roles ON roles.role_id = users.role_id
-                                                               JOIN education_system.human_data hd on hd.data_id = users.data_id";
-                $result = $dbh->query($query);
-                $result->setFetchMode(PDO::FETCH_ASSOC);
-                $table = "<table class='table  table-hover table-striped'>";
-                $table .= "<thead>
-                            <th class='text-center'>ID</th>
-                            <th class='text-center'>Email</th>
-                            <th class='text-center'>ФИО</th>
-                            <th class='text-center'>Role</th>
-                           </thead>";
-                foreach ($result as $row) {
-                    $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
-                    $table .= "<tr>";
-                    $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
-                    $table .= "<td class='text-center'>" . $row['email'] . "</td>";
-                    $table .= "<td class='text-center'>" . ($fullName) . "</td>";
-                    $table .= "<td class='text-center'>" . $row['role'] . "</td>";
-                    $table .= "</tr>";
-                }
-                $table .= "</table>";
-                echo $table;
-            }
 
             ?>
 
@@ -54,7 +28,13 @@ require_once "Services/pdoConnection.php";
     </div>
 
 
-    <div class="tab-pane fade" id="logs-tab-pane" role="tabpanel" aria-labelledby="logs-tab" tabindex="0">...</div>
+    <div class="tab-pane fade" id="logs-tab-pane" role="tabpanel" aria-labelledby="logs-tab" tabindex="0">
+        <?php
+
+        renderLogsTable();
+
+        ?>
+    </div>
 
 </div>
 

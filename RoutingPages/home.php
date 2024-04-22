@@ -74,7 +74,7 @@ require_once "Components/header.php";
                     </div>
 
                     <div class="mb-3">
-                        <label for="lastname" class="form-label">Отчество (при наличие)</label>
+                        <label for="lastname" class="form-label">Отчество (при наличии)</label>
                         <input type="text" name="lastname" class="form-control form-control-sm " id="lastname"
                                aria-describedby="emailHelp">
                     </div>

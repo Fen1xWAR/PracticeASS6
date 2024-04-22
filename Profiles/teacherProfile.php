@@ -1,7 +1,7 @@
 <div id="select-container" class="container-xxl d-flex flex-column align-items-center   ">
 
 
-<select id="group-select" class="form-select w-50" aria-label="Выбор группы">
+<select id="group-select" class="form-select w-100" aria-label="Выбор группы">
 
 
     <?php
@@ -23,7 +23,7 @@
     ?>
 
 </select>
-<select class="form-select mt-3 d-none w-50" id="block-select" aria-label="Выбор раздела">
+<select class="form-select mt-3 d-none w-100" id="block-select" aria-label="Выбор раздела">
 <?php
 $query = $dbh->prepare("SELECT block_id, block_name FROM blocks");
 $query->execute();

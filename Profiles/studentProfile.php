@@ -1,4 +1,4 @@
-<select class="form-select" data-live-search="true" aria-label="Default select example">
+<select class="form-select" data-live-search="true" class="form-select w-100" aria-label="Default select example">
     <?php
 
 

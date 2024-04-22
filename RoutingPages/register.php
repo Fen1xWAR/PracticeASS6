@@ -7,8 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Вход</title>
     <link rel="stylesheet" href="../style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
 </head>
 <body class=" d-flex flex-column min-vh-100">
 <header>
@@ -63,15 +63,15 @@
                     </div>
                     <div class="mb-3 ">
 
-                        <label for="InputEmail" class="form-label">Email</label>
+                        <label for="email" class="form-label">Email</label>
                         <input name="email" value="<?php echo $email ?>" type="text" required class="form-control"
-                               id="InputEmail"
+                               id="email"
                                aria-describedby="emailHelp">
 
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputPassword" class="form-label">Пароль</label>
-                        <input name="password" required type="password" class="form-control" id="exampleInputPassword">
+                        <label for="password" class="form-label">Пароль</label>
+                        <input name="password" required type="password" class="form-control" id="password">
 
 
                     </div>
@@ -80,6 +80,26 @@
                         <input type="password" required class="form-control form-control-sm"
                                aria-describedby='passwordHelp' id="passwordRepeat">
                         <div id="passwordHelp" class="form-text">Никому не сообщайте ваш пароль.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="groupSelect" class="form-label">Группа:</label>
+                        <select id="groupSelect" required class="form-select">
+                            <option value="" >Выберите класс:</option>
+                            <?php
+                            require "Services/pdoConnection.php";
+                            global $dbh;
+
+                            $query = $dbh->prepare("SELECT group_id, group_name FROM education_system.groups");
+                            $query->execute();
+                            $result = $query->fetchAll();
+
+                            foreach ($result as $group) {
+
+                                echo "<option VALUE='" . $group['group_id'] . "' >" . $group['group_name'] . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Создать аккаунт</button>
@@ -102,20 +122,24 @@ require_once "Components/footer.php"
 <script src="../script.js"></script>
 <script>
     const form = $("#loginForm")
-
+    const select = $("#groupSelect")
     form.submit(function (e) {
         e.preventDefault()
-        console.log('Register!')
-        let formData = form.serializeArray()
+        const password = $("#password").val()
+        if(password !== $('#passwordRepeat').val()){
+            Notification('Пароли не совпадают!').show()
+            return
+        }
         let data = {
-            surname: formData[0],
-            name : formData[1],
-            lastname : formData[2],
-            email : formData[3],
-            password : formData[4]
+            surname: $('#surname').val(),
+            name : $('#name').val(),
+            lastname : $('#lastname').val(),
+            email : $('#email').val(),
+            password: password,
+            role: '1',
+            group_id: select.val()
 
         }
-
         $.ajax({
             type: form.attr('method'),
             url: form.attr('action'),

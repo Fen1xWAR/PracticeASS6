@@ -4,7 +4,7 @@
     }
 
 }
-.active {
+.select {
     border: 1px solid #353434;
     background-color: #a9afc1;
 }
@@ -43,4 +43,8 @@
     filter: brightness(50%);
     height: 100%;
     object-fit: cover;
+}
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bs-primary);
+    --bs-tooltip-color: var(--bs-white);
 }

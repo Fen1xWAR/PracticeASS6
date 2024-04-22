@@ -2,9 +2,9 @@ body{
     background-image: url('assets/StockImg/bg.jpg');
 }
 #regContainer{
-    background-image: url('assets/StockImg/visa_bg.jpg');
+    background-image: url('assets/StockImg/home-bg.jpg');
     /* Add the blur effect */
-    backdrop-filter: blur(8px)  brightness(50%);
+    backdrop-filter: brightness(-200);
 
     /* Full height */
     height: 100%;

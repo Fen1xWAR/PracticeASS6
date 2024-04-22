@@ -1,5 +1,6 @@
 
 <link rel="icon" type="image/x-icon" href="assets/StockImg/favicon.ico">
+<link rel="stylesheet" href="bootstrap-5.3.3/bootstrap-5.3.3/css/bootstrap.css">
 
 <?php
 require_once "Services/pdoConnection.php";

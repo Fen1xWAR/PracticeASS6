@@ -6,8 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css”/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <link rel="stylesheet" href="../components.css">
     <link rel="stylesheet" href="../style.css">
     <title>Главная</title>
@@ -28,22 +27,19 @@ require_once "Components/header.php";
             <div class="carousel-item active c-item">
                 <img src="../CarouselImages/01.jpg" class="d-block w-100 c-image" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Second slide label</h5>
-                    <p>Some representative placeholder content for the first slide.</p>
+                    <h4>Учись легко!</h4>
                 </div>
             </div>
             <div class="carousel-item c-item">
                 <img src="../CarouselImages/02.jpg" class="d-block w-100 c-image" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Second slide label</h5>
-                    <p>Some representative placeholder content for the second slide.</p>
+                    <h4>Учись удобно!</h4>
                 </div>
             </div>
             <div class="carousel-item c-item">
-                <img src="../CarouselImages/03.jpg" class="d-block w-100 c-image" alt="...">
+                <img src="../CarouselImages/03.png" class="d-block w-100 c-image" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Third slide label</h5>
-                    <p>Some representative placeholder content for the second slide.</p>
+                    <h4>Учись онлайн!</h4>
                 </div>
             </div>
         </div>
@@ -93,7 +89,6 @@ require_once "Components/header.php";
             </div>
         </div>
 
-<!--        <button class="btn btn-primary" onclick="location.href='login.php'">Войти</button>-->
     </div>
 </div>
 

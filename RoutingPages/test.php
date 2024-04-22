@@ -6,8 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css”/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../components.css">
     <title>Обучение</title>
@@ -34,10 +33,10 @@ if(!isset($_SESSION['blockId'])){
 
                         if (isset($_SESSION['blockId'])) {
 
-
                             $blockStructure = getBLockStructure($_SESSION['blockId']);
                             foreach ($blockStructure as $block) {
-                                generateNavButton($block['type'], $block['component_id']);
+                                $blockTitle = json_decode($block['data'], true)['Title'];
+                                generateNavButton($block['type'], $block['component_id'],$blockTitle);
                             }
                         }
 
@@ -106,8 +105,8 @@ require_once "Components/footer.php"
                     }
 
                     // Add active class to selected navigation link
-                    $('#nav-panel .nav-link').removeClass('active');
-                    $('[data-component-id="' + componentId + '"]').addClass('active');
+                    $('#nav-panel .nav-link').removeClass('select');
+                    $('[data-component-id="' + componentId + '"]').addClass('select');
                 }
             },
             error: ajaxErrorHandling
@@ -279,6 +278,11 @@ require_once "Components/footer.php"
 
     });
 
+    const exampleEl = document.querySelectorAll('li.nav-item')
+    exampleEl.forEach(t=>{
+            new bootstrap.Tooltip(t)
+    }
 
+    )
 </script>
 </html>

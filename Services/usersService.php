@@ -30,7 +30,7 @@ function saveLog($userId): void
     $query->execute();
 }
 
-function checkRegData($email): array|string
+function checkRegData($email): string
 {
     global $dbh;
     try {
@@ -45,7 +45,7 @@ function checkRegData($email): array|string
         return "Пользователь с таким Email уже существует!";
 
     }
-    return '';
+    return "";
 }
 
 if (isset($_POST['register'])) {
@@ -57,7 +57,7 @@ if (isset($_POST['register'])) {
 
     $data = checkRegData($email);
 
-    if (is_string($data)) {
+    if ( $data != '') {
         http_response_code(404);
         echo json_encode(["message" => $data], JSON_UNESCAPED_UNICODE);
     } else {
@@ -123,15 +123,19 @@ function register($dataToRegister): void
     $query->bindValue(":surname", $dataToRegister['surname']);
     $query->bindValue(":lastname", $dataToRegister['lastname']);
     $query->execute();
-    $dataId = $dbh->query('SELECT data_id FROM human_data ORDER BY data_id DESC LIMIT 1')[0]['data_id'];
-    $query = $dbh->prepare("INSERT INTO users  (email, password, role_id, data_id) Values ( :email, :password, :roleId, $dataId)");
+    $dataIdQ = $dbh->query('SELECT data_id FROM human_data ORDER BY data_id DESC LIMIT 1');
+    $dataId = $dataIdQ->fetch()['data_id'];
+
+    $query = $dbh->prepare("INSERT INTO users  (email, password, role_id, data_id) Values ( :email, :password, :roleId,:dataId)");
+    $query->bindValue(":dataId", $dataId);
     $query->bindValue(":email", $dataToRegister['email']);
     $query->bindValue(":password", password_hash($dataToRegister['password'], PASSWORD_DEFAULT));
     $query->bindValue(":roleId", $dataToRegister['role']);
     $query->execute();
-    $userId = $dbh->prepare("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1 ")[0]['user_id'];
+    $userIdQ = $dbh->query("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1 ");
+    $userId = $userIdQ->fetch()['user_id'];
     switch ($dataToRegister['role']) {
-        case 'teacher':
+        case '2':
             $dbh->query('INSERT into teachers (user_id) values (' . $userId . ')');
             break;
         default:

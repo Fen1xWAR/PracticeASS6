@@ -54,7 +54,7 @@ require_once "Components/header.php";
     </div>
 
     <div class="container-fluid d-flex flex-grow-1 flex-column p-4 ">
-        <div id="regContainer" class="row  border border-info h-100 p-4 rounded-4" style="flex: 1">
+        <div id="regContainer" class="row  h-100 p-4 rounded-4" style="flex: 1">
 
             <div class="col-md-7 d-flex justify-content-start mt-   align-items-top">
                 <h1 class="text-white text-center">Еще не с нами? Присоединяйся сейчас!</h1>

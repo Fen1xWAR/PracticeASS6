@@ -18,7 +18,7 @@ require_once "Components/header.php";
 ?>
 <div class="container-fluid d-flex  flex-grow-1">
     <div class="container-xxl d-flex  flex-column p-5">
-        <div class="container-md flex-grow-1 p-3 rounded-5 border border-info bg-light" id="content">
+        <div class="container-md flex-grow-1 p-3 rounded-5  bg-light" id="content">
             <?php
             if (!isset($_SESSION['userRole'])) {
                 header("Location: /login");

@@ -71,7 +71,7 @@ require_once "Components/footer.php"
                     form.addClass("was-validated")
                 setTimeout(()=>{
                     location.href = "/profile"
-                },800)
+                },300)
 
 
 

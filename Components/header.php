@@ -1,7 +1,7 @@
 <nav class="fs-5 navbar bg-primary navbar-expand-lg navbar-dark ">
     <div class="container-fluid">
         <a class="navbar-brand " href="/">
-            <img src="/assets/StockImg/Logo.png" alt="Logo" width="60px" height="50px" class="d-inline-block">
+            <img src="/assets/StockImg/Logo.png"  alt="Logo" width="60px" height="50px" class="d-inline-block rounded-3">
             Обучающая система
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

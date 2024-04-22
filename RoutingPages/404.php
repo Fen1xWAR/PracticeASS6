@@ -19,7 +19,7 @@
     <div class="container-xxl pt-1 p-0 p-sm-5">
         <section class="error-404-section section-padding">
             <div class="error container">
-                <img src="../assets/StockImg/error404.png" style="max-height: 400px; max-width: 600px" alt>
+                <img src="../assets/StockImg/error404.png"  class="w-100" style="max-height: 400px; max-width: 600px" alt>
             </div>
             <div class="error-message">
                 <h3>Ой! Страница не найдена!</h3>

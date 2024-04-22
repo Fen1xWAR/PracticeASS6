@@ -46,6 +46,7 @@ foreach ($result as $block) {
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script>
+    const $container = $('#tableContainer')
     const $blockSelect = $('#block-select')
     const $groupSelect = $('#group-select')
     let groupId;
@@ -58,10 +59,10 @@ foreach ($result as $block) {
                         "blockId" : blockId
                 }},
             success: function (data) {
+                console.log(data)
                 const response = JSON.parse(data)
                 if (response['html']) {
 
-                    const $container = $('#tableContainer')
 
                     $container.html(response['html'])
                 }
@@ -83,8 +84,14 @@ foreach ($result as $block) {
     $groupSelect.on('change', function () {
         groupId = this.value
         $blockSelect.addClass('d-block').removeClass('d-none')
+        $container.html('')
+        if($blockSelect.val()){
+            loadGroupData(groupId, $blockSelect.val())
+        }
+
     });
     $blockSelect.on('change',function (){
+
         loadGroupData(groupId,this.value)
     })
 </script>

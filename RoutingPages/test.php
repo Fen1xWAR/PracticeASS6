@@ -89,9 +89,12 @@ require_once "Components/footer.php"
             data: {"componentId": componentId},
             success: function (data) {
                 const componentData = JSON.parse(data)
-                questions = componentData['questions'];
+                if (componentData['questions']){
+                    questions = componentData['questions'];
+                    userAnswers = new Array(questions.length).fill('')
+                }
 
-                console.log(componentData["questions"])
+                // console.log(componentData["questions"])
                 if (componentData['html']) {
                     $container.html(componentData['html']);
                     $header.text(componentData["header"]);
@@ -212,7 +215,7 @@ require_once "Components/footer.php"
 
         const backButton = $('<button type="button" id="backButton"  class="btn btn-primary">Назад</button>');
         backButton.click(() => {
-            Array.isArray(userAnswers[currentQuestionNumber]) ? userAnswers[currentQuestionNumber].sort().join('') : userAnswers[currentQuestionNumber]
+            userAnswers[currentQuestionNumber] =  Array.isArray(userAnswers[currentQuestionNumber]) ?  userAnswers[currentQuestionNumber].sort().join('') : userAnswers[currentQuestionNumber]
             currentQuestionNumber--;
             userAnswers[currentQuestionNumber] = []
             displayQuestion(currentQuestionNumber);
@@ -229,13 +232,10 @@ require_once "Components/footer.php"
 
         const nextButton = $('<button type="button" id="nextButton" class="btn btn-primary ">Далее</button>');
         nextButton.click(() => {
-
+            userAnswers[currentQuestionNumber] =  Array.isArray(userAnswers[currentQuestionNumber]) ?  userAnswers[currentQuestionNumber].sort().join('') : userAnswers[currentQuestionNumber]
             currentQuestionNumber++;
-            if (questionCategory === 0) {
-                userAnswers[currentQuestionNumber - 1] = userAnswers[currentQuestionNumber - 1] || '';
-            } else if (questionCategory === 1) {
-                userAnswers[currentQuestionNumber - 1] = userAnswers[currentQuestionNumber - 1] ? userAnswers[currentQuestionNumber - 1].join(',') : '';
-            }
+
+
 
             displayQuestion(currentQuestionNumber);
             $("#backButton").prop("disabled", false)
@@ -245,8 +245,8 @@ require_once "Components/footer.php"
                 nextButton.text('Завершить');
                 nextButton.removeClass('btn-primary').addClass('btn-success');
                 nextButton.off('click').click(() => {
+                    userAnswers[currentQuestionNumber] =  Array.isArray(userAnswers[currentQuestionNumber]) ?  userAnswers[currentQuestionNumber].sort().join('') : userAnswers[currentQuestionNumber]
                     sendAnswers();
-                    console.log('Finish button clicked');
 
                 })
             }

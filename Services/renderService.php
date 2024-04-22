@@ -159,7 +159,7 @@ function createStudentList($data): string
     $html.= "</tr>";
 
     $columnCount = count($data);
-    $rowCount = count($data[0]);
+    $rowCount = count($data[1]);
     for ($i = 0; $i < $rowCount; $i++) {
 
 
@@ -413,8 +413,10 @@ function getStudentListByGroupId($groupId,$blockId): false|array
     $studentIdsInGroup = array_values(array_column($studentData, "id"));
     $studentFullNameInGroup = [];
     foreach ($studentData as $student) {
-        $studentFullNameInGroup[] = $student['surname'] . ' ' . substr($student['name'], 0, 2) . '.' . substr($student['lastname'], 0, 2).'.';
+        $lastName = $student['lastname'] !== '' ? substr($student['lastname'], 0, 2).'.' : '';
+        $studentFullNameInGroup[] = $student['surname'] . ' ' . substr($student['name'], 0, 2) . '.' .$lastName;
     }
+
     $dataToRender = [];
     $dataToRender[] = $headersArray;
     $dataToRender[] = $studentFullNameInGroup;

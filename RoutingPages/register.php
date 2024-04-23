@@ -38,6 +38,7 @@
                     $nameDisabled = 'disabled';
                 }
                 ?>
+                <h1 class=" mb-3 text-center text-primary">Регистрация:</h1>
                 <form id="loginForm" class="d-flex flex-column  fs-5" action="../Services/usersService.php"
                       method="post">
                     <div class="mb-3">

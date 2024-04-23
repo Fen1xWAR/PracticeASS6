@@ -15,24 +15,30 @@
     ?>
 </header>
 <div id="toastRoot" class="container-fluid d-flex flex-grow-1">
-    <div  class="container-xl d-flex justify-content-center flex-column p-5">
+    <div class="container-xl d-flex justify-content-center flex-column p-5">
 
         <div class="row justify-content-center ">
 
             <div class="col-md-6">
-
-                <form id="loginForm" class="d-flex flex-column  fs-5" action="../Services/usersService.php" method="post">
+                <h1 class=" mb-3 text-center text-primary">Вход:</h1>
+                <form id="loginForm" class="d-flex flex-column  fs-5" action="../Services/usersService.php"
+                      method="post">
                     <div class="mb-3 ">
-                        <label for="InputEmail"  class="form-label">Email</label>
-                        <input name="email" type="text" required class="form-control" id="InputEmail" >
+                        <label for="InputEmail" class="form-label">Email</label>
+                        <input name="email" type="text" required class="form-control" id="InputEmail">
 
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword" class="form-label">Пароль</label>
-                        <input name="password" required type="password" class="form-control"  id="exampleInputPassword">
+                        <input name="password" required type="password" class="form-control" id="exampleInputPassword">
 
 
                     </div>
+                    <p>Нет аккаунта?
+                        <a class=" mb-sm-3 link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                           href="/register">
+                            Зарегистрироваться
+                        </a></p>
 
                     <button type="submit" class="btn text-white btn-primary">Войти</button>
                 </form>
@@ -68,11 +74,10 @@ require_once "Components/footer.php"
             url: form.attr('action'),
             data: {"login": data},
             success: function () {
-                    form.addClass("was-validated")
-                setTimeout(()=>{
+                form.addClass("was-validated")
+                setTimeout(() => {
                     location.href = "/profile"
-                },300)
-
+                }, 300)
 
 
             },

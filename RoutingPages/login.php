@@ -25,7 +25,7 @@
                       method="post">
                     <div class="mb-3 ">
                         <label for="InputEmail" class="form-label">Email</label>
-                        <input name="email" type="text" required class="form-control" id="InputEmail">
+                        <input name="email" type="email" required class="form-control" id="InputEmail">
 
                     </div>
                     <div class="mb-3">

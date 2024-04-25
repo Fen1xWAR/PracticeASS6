@@ -91,29 +91,7 @@ if (isset($_POST['dataToRegisterRedirect'])) {
     http_response_code(200);
 }
 
-function login($email, $password): void
-{
 
-
-    $data = CheckLoginData($email, $password);
-
-    if (is_string($data)) {
-        http_response_code(400);
-        echo json_encode(["message" => "Неверная почта или пароль!"], JSON_UNESCAPED_UNICODE);
-    } else {
-        $role = $data['userRole'];
-        $id = $data['userID'];
-
-        session_start();
-        saveLog($id);
-        $_SESSION['userRole'] = $role;
-        $_SESSION['userID'] = $id;
-
-        http_response_code(200);
-
-    }
-
-}
 
 function register($dataToRegister): void
 {
@@ -145,6 +123,29 @@ function register($dataToRegister): void
     }
 }
 
+function login($email, $password): void
+{
+
+
+    $data = CheckLoginData($email, $password);
+
+    if (is_string($data)) {
+        http_response_code(400);
+        echo json_encode(["message" => "Неверная почта или пароль!"], JSON_UNESCAPED_UNICODE);
+    } else {
+        $role = $data['userRole'];
+        $id = $data['userID'];
+
+        session_start();
+        saveLog($id);
+        $_SESSION['userRole'] = $role;
+        $_SESSION['userID'] = $id;
+
+        http_response_code(200);
+
+    }
+
+}
 
 if (isset($_POST['logout'])) {
     session_start();

@@ -71,7 +71,34 @@ if (isset($_POST['register'])) {
 
 }
 
+if (isset($_POST['editUser'])) {
+    global $dbh;
+    $editedData = $_POST['editUser'];
+    $query = $dbh->prepare("UPDATE users SET role_id = :role_id, email = :email WHERE user_id = :user_id");
+    $query->bindValue(":role_id", $editedData['userRole']);
+    $query->bindValue(":email", $editedData['userEmail']);
+    $query->bindValue(":user_id", $editedData['userId']);
+    $query->execute();
+    if ($editedData['userPassword'] != '') {
+        $query = $dbh->prepare("UPDATE users SET password = :password WHERE user_id = :user_id");
+        $query->bindValue(":password", password_hash($editedData['userPassword'], PASSWORD_DEFAULT));
+        $query->bindValue(":user_id", $editedData['userId']);
+        $query->execute();
 
+    }
+    $query = $dbh->prepare("SELECT * FROM users WHERE user_id = :user_id");
+    $query->bindValue(":user_id", $editedData['userId']);
+    $query->execute();
+    $result = $query->fetch();
+    $query = $dbh->prepare("UPDATE human_data SET name = :name, surname = :surname, lastname = :lastname WHERE data_id = :data_id");
+    $query->bindValue(":data_id", $result['data_id']);
+    $query->bindValue(":name", $editedData['userName']);
+    $query->bindValue(":surname", $editedData['userSurname']);
+    $query->bindValue(":lastname", $editedData['userLastname']);
+    $query->execute();
+    http_response_code(200);
+
+}
 
 if (isset($_POST['login'])) {
 
@@ -91,7 +118,12 @@ if (isset($_POST['dataToRegisterRedirect'])) {
     http_response_code(200);
 }
 
-
+if (isset($_POST['logout'])) {
+    session_start();
+    session_unset();
+    session_destroy();
+    exit();
+}
 
 function register($dataToRegister): void
 {
@@ -147,9 +179,4 @@ function login($email, $password): void
 
 }
 
-if (isset($_POST['logout'])) {
-    session_start();
-    session_unset();
-    session_destroy();
-    exit();
-}
+

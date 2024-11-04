@@ -317,30 +317,91 @@ function renderLecture(int $component_id, array $data): void
     echo json_encode(["header" => $data['Title'], "html" => $textElement]);
 }
 function renderUsersTable(): void
-
 {
     global $dbh;
-    $query = "SELECT user_id, email, role, name,surname , lastname FROM users JOIN roles ON roles.role_id = users.role_id
+    $query = "SELECT user_id, email, users.role_id, role, name, surname, lastname FROM users JOIN roles ON roles.role_id = users.role_id
                                                                JOIN education_system.human_data hd on hd.data_id = users.data_id ORDER BY roles.role_id desc ";
     $result = $dbh->query($query);
     $result->setFetchMode(PDO::FETCH_ASSOC);
-    $table = "<table class='table  table-hover table-striped'>";
+
+    // Начало таблицы
+    $table = "<table class='table table-hover table-striped'>";
     $table .= "<thead>
                             <th class='text-center'>ID</th>
                             <th class='text-center'>Email</th>
                             <th class='text-center'>ФИО</th>
-                            <th class='text-center'>Role</th>
+                            <th class='text-center'>Роль</th>
+                            <th class='text-center'>Настроить</th>
                            </thead>";
+
+    // Заполнение таблицы данными
     foreach ($result as $row) {
-        $fullName = $row['surname'] ." ". substr($row['name'],0,2) . "." . substr($row['lastname'],0,2).".";
+        $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
         $table .= "<tr>";
         $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
         $table .= "<td class='text-center'>" . $row['email'] . "</td>";
-        $table .= "<td class='text-center'>" . ($fullName) . "</td>";
+        $table .= "<td class='text-center'>" . $fullName . "</td>";
         $table .= "<td class='text-center'>" . $row['role'] . "</td>";
+        $table .= "<td class='text-center'><button onclick=openEditModal(".json_encode($row,JSON_UNESCAPED_UNICODE).") class='btn btn-secondary' style='padding: 2px'>Изменить</button></td>";
         $table .= "</tr>";
     }
+
     $table .= "</table>";
+
+    // Модальное окно
+    $table .= "
+    <div class='modal fade' id='editUserModal' tabindex='-1' role='dialog' aria-labelledby='editUserModalLabel' aria-hidden='true'>
+      <div class='modal-dialog' role='document'>
+        <div class='modal-content'>
+          <div class='modal-header'>
+            <h5 class='modal-title' id='editUser ModalLabel'>Изменить пользователя</h5>
+          </div>
+          <div class='modal-body'>
+            <form id='editUserForm'>
+              <h6>Системная информация</h6>
+              <input type='hidden' id='userId' name='userId'>
+              <div class='form-group'>
+                <label for='userEmail'>Email</label>
+                <input type='email' class='form-control' id='userEmail' name='userEmail' required>
+              </div>
+              <div class='form-group'>
+                <label for='userPassword'>Новый пароль</label>
+                <input type='password' class='form-control' id='userPassword' name='userPassword' required>
+              </div>
+              <div class='form-group'>
+                <label for='userRole'>Роль</label>
+                <select class='form-control' id='userRole' required>
+                        <option value='3'>Admin</option>
+                        <option value='2'>Teacher</option>
+                        <option value='1'>Student</option>
+                </select>      
+              </div>
+              <br>
+              <h6>Личная информация</h6>    
+              <div class='form-group'>
+                <label for='userSurname'>Фамилия</label>
+                <input type='text' class='form-control' id='userSurname' name='userSurname' required>
+              </div>
+              <div class='form-group'>
+                <label for='userName'>Имя</label>
+                <input type='text' class='form-control' id='userName' name='userName' required>
+              </div>
+              <div class='form-group'>
+                <label for='userLastname'>Отчество</label>
+                <input type='text' class='form-control' id='userLastname' name='userLastname' required>
+              </div>
+              
+            </form>
+          </div>
+          <div class='modal-footer'>
+            <button type='button' class='btn btn-secondary' data-dismiss='modal'>Закрыть</button>
+            <button type='button' class='btn btn-primary' onclick='saveUserChanges()'>Сохранить изменения</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    ";
+
     echo $table;
 }
 

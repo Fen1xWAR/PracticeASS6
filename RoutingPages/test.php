@@ -24,7 +24,7 @@ if(!isset($_SESSION['blockId'])){
     <div class="container-xxl pt-1 p-0 p-sm-5">
         <div class="row flex-nowrap">
             <div class="col-1" style="min-width: 50px;">
-                <div id="nav-panel" class="p-0 sticky-top mt-5 border bg-light"
+                <div id="nav-panel"  class="p-0 sticky-top mt-5 border bg-light"
                      style="top: 4em; min-width: 50px; max-width: 100px">
                     <ul id="nav-items" class="nav p-0 flex-column align-items-center">
 

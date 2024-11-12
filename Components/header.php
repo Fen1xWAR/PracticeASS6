@@ -13,10 +13,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/education">Обучение</a>
                 </li>
+                <?php
+                session_start();
+                if (isset($_SESSION['userRole']) and ($_SESSION['userRole'] == 'teacher')) {
+                    echo ' <li class="nav-item">
+                    <a class="nav-link" href="/materials">Методические материалы</a>
+                </li>';
+                }
+                ?>
+
             </ul>
             <hr class="d-lg-none text-white">
             <?php
-            session_start();
+
             if (!isset($_SESSION['userID'])) {
                 echo '
                     <button class="btn btn-light" onclick="location.href=\'../login\'">Войти</button>';

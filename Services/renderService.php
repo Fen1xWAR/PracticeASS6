@@ -316,6 +316,23 @@ function renderLecture(int $component_id, array $data): void
 
     echo json_encode(["header" => $data['Title'], "html" => $textElement]);
 }
+
+
+
+
+function renderTest(array $data): void
+{
+    $textElement = "";
+    $selectedGroupId = $_SESSION['userRole'] ?? null;
+    $textElement .= htmlspecialchars($data['Text']) . "\n";
+
+    $footer = "<button type='button' onclick='displayQuestion(0)' " . ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Старт</button>\n";
+
+
+    echo json_encode(["header" => $data['Title'], "html" => $textElement, "questions" => $data["Questions"], "footer" => $footer]);
+}
+
+
 function renderUsersTable(): void
 
 {
@@ -369,19 +386,6 @@ function renderLogsTable(): void
     $table .= "</table>";
     echo $table;
 }
-
-function renderTest(array $data): void
-{
-    $textElement = "";
-    $selectedGroupId = $_SESSION['userRole'] ?? null;
-    $textElement .= htmlspecialchars($data['Text']) . "\n";
-
-    $footer = "<button type='button' onclick='displayQuestion(0)' " . ($selectedGroupId === null ? ' disabled' : '') . " id='startTestButton' class='btn btn-primary'>Старт</button>\n";
-
-
-    echo json_encode(["header" => $data['Title'], "html" => $textElement, "questions" => $data["Questions"], "footer" => $footer]);
-}
-
 
 function getStudentListByGroupId($groupId,$blockId): false|array
 {

@@ -30,10 +30,6 @@ switch ($request) {
     case "/section":
         require "RoutingPages/test.php";
         break;
-    case (preg_match('/^\/material\/(\d+)$/', $request, $matches) ? true : false):
-        $materialId = $matches[1];
-        require "material_view.php"; // файл для просмотра материала
-        break;
     default:
         require "RoutingPages/404.php";
         break;

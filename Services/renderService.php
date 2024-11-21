@@ -115,6 +115,12 @@ function getResultByBlockAndUserId($blockId, $userId): array|string
 
 function createUserResultAccordion($counter, $dataToRender): string
 {
+    global $dbh;
+    $query = $dbh->prepare("SELECT isFinalTest FROM  components  where component_id = :componentId");
+    $query->bindParam(':componentId', $_SESSION['currentComponentId']);
+    $query->execute();
+    $result = $query->fetch();
+    $isFinalTest = $result['isFinalTest'];
     $testId = $dataToRender['testId'];
     $testTitle = $dataToRender['testTitle'];
     $result = json_decode($dataToRender['testResult'], true);
@@ -123,7 +129,10 @@ function createUserResultAccordion($counter, $dataToRender): string
     $maxResult = $result['MaxResult'];
     $answers = json_decode($dataToRender['answers']);
 
-    $content = generateTestResultTable(["№", "Ваш ответ"], false, $userAnswers, $answers)['table'];
+
+
+
+    $content = generateTestResultTable(["№", "Ваш ответ"], false,  $isFinalTest, $userAnswers, $answers)['table'];
     $content .= '<p class="text-center">Количество правильных ответов: ' . $userResult . ' из ' . $maxResult . '</p>';
     $show = $counter === 1 ? ' show' : '';
     $collapsed = $counter != 1 ? "collapsed" : '';
@@ -179,7 +188,7 @@ function createStudentList($data): string
     return $html;
 }
 
-function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): array
+function generateTestResultTable(array $headers, bool $isTeacher, bool $isFinalTest, ...$columns): array
 {
     $correctAnswersCount = 0;
     $columnCount = $isTeacher ? count($columns) : count($columns) - 1;
@@ -199,11 +208,16 @@ function generateTestResultTable(array $headers, bool $isTeacher, ...$columns): 
 
     // Generate the table rows
     for ($i = 0; $i < $rowCount; $i++) {
-        if ($columns[0][$i] == $columns[1][$i]) {
-            $correctAnswersCount++;
-            $colorClass = "success";
-        } else {
-            $colorClass = "danger";
+        if (!$isFinalTest or $isTeacher){
+            if ($columns[0][$i] == $columns[1][$i]) {
+                $correctAnswersCount++;
+                $colorClass = "success";
+            } else {
+                $colorClass = "danger";
+            }
+        }
+        else{
+            $colorClass = "light";
         }
         $table .= "<tr  class='table-" . $colorClass . "'>";
 
@@ -239,7 +253,15 @@ function proceedUserAnswers($userAnswers): string
     $numQuestions = count($userAnswers);;
 
     $isTeacher = $_SESSION['userRole'] == 'teacher';
-    $tableResultArray = generateTestResultTable(["№", "Ваш ответ", "Правильный ответ"], $isTeacher, $userAnswers, $answers);
+
+    $query = $dbh->prepare("SELECT isFinalTest FROM  components  where component_id = :componentId");
+    $query->bindParam(':componentId', $_SESSION['currentComponentId']);
+    $query->execute();
+    $result = $query->fetch();
+    $isFinalTest = $result['isFinalTest'];
+
+    $tableResultArray = generateTestResultTable(["№", "Ваш ответ", "Правильный ответ"], $isTeacher ,$isFinalTest, $userAnswers, $answers);
+
     $table = $tableResultArray['table'];
     $numCorrect = $tableResultArray['correctAnswersCount'];
     $table .= '<p class="text-center">Количество правильных ответов: ' . $numCorrect . ' из ' . $numQuestions . '</p>';
@@ -569,12 +591,15 @@ function downloadBlockImageById($block_id): void
     }
 }
 
-function generateNavButton($componentButtonType, $componentId,$blockTitle): void
+function generateNavButton($componentButtonType, $componentId,$isFinalTest,$blockTitle): void
 {
     $svgs = ['<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">' .
         '<path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>' .
-        '</svg>', ' <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"> <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/> <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/> </svg>'];
-    $svgCode = $componentButtonType === "Lecture" ? $svgs[0] : $svgs[1]; // replace with the desired SVG code
+        '</svg>', ' <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"> <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/> <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/> </svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
+  <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+  <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
+</svg>'];
+    $svgCode = $componentButtonType === "Lecture" ? $svgs[0] :  ($isFinalTest ? $svgs[2]: $svgs[1]);
 
     $listItem = '<li class="w-100 d-flex  justify-content-center m-0 p-0 nav-item" data-bs-trigger="hover" data-bs-delay: { "show": 500, "hide": 100 }  data-bs-toggle="tooltip" data-bs-placement="right"
         data-bs-custom-class="custom-tooltip"
@@ -598,7 +623,7 @@ function getAllBlocks(): false|array
 function getBLockStructure($blockId): false|array
 {
     global $dbh;
-    $query = $dbh->prepare("SELECT type, component_id, data FROM components WHERE block_id= :blockId");
+    $query = $dbh->prepare("SELECT type, component_id, data, isFinalTest FROM components WHERE block_id= :blockId");
     $query->bindParam(':blockId', $blockId);
     $query->execute();
     return $query->fetchAll(PDO::FETCH_ASSOC);

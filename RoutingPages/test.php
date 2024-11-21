@@ -36,7 +36,7 @@ if(!isset($_SESSION['blockId'])){
                             $blockStructure = getBLockStructure($_SESSION['blockId']);
                             foreach ($blockStructure as $block) {
                                 $blockTitle = json_decode($block['data'], true)['Title'];
-                                generateNavButton($block['type'], $block['component_id'],$blockTitle);
+                                generateNavButton($block['type'], $block['component_id'], $block['isFinalTest'],$blockTitle);
                             }
                         }
 

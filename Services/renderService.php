@@ -403,9 +403,13 @@ function renderUsersTable(): void
                 <label for='userEmail'>Email</label>
                 <input type='email' class='form-control' id='userEmail' name='userEmail' required>
               </div>
+              
               <div class='form-group'>
                 <label for='userPassword'>Новый пароль</label>
-                <input type='password' class='form-control' id='userPassword' name='userPassword' required>
+                <div class='input-group'>
+                    <input type='password' class='form-control' id='userPassword' name='userPassword' required>
+                    <button type='button' class='btn btn-outline-primary' onclick='setDefaultPassword()'>Стандартный пароль</button>    
+                </div> 
               </div>
               <div class='form-group'>
                 <label for='userRole'>Роль</label>

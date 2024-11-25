@@ -36,11 +36,6 @@ function ajaxErrorHandling(xhr) {
 
 function openEditModal(jsonStr) {
 
-    console.log(jsonStr)
-
-
-
-
     document.getElementById('userId').value = jsonStr['user_id'];
     document.getElementById('userEmail').value = jsonStr['email'];
     document.getElementById('userName').value = jsonStr['name'];
@@ -50,9 +45,10 @@ function openEditModal(jsonStr) {
 
     $('#editUserModal').modal('show');
 }
-
+function setDefaultPassword() {
+    $('#userPassword').val( `${$('#userSurname').val()}${$('#userName').val()[0]}${$('#userLastname').val()[0]}`)
+}
 function saveUserChanges() {
-    console.log('saving')
     // Получаем данные из формы
     var formData = {
         userId: $('#userId').val(),
@@ -70,10 +66,9 @@ function saveUserChanges() {
         url: "Services/usersService.php",
         data: {"editUser": formData},
         success: function (response) {
-            // setTimeout(() => {
-            //     location.reload()
-            // }, 800)
-            console.log(response)
+            setTimeout(() => {
+                location.reload()
+            }, 800)
 
         },
         error: ajaxErrorHandling

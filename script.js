@@ -48,6 +48,24 @@ function openEditModal(jsonStr) {
 function setDefaultPassword() {
     $('#userPassword').val( `${$('#userSurname').val()}${$('#userName').val()[0]}${$('#userLastname').val()[0]}`)
 }
+
+function removeUser() {
+    let userId = $('#userId').val()
+    $.ajax({
+        type: "post",
+        url: "Services/usersService.php",
+        data: {"removeUser": userId},
+        success: function (response) {
+            setTimeout(() => {
+                location.reload()
+            }, 800)
+
+        },
+        error: ajaxErrorHandling
+
+
+    });
+}
 function saveUserChanges() {
     // Получаем данные из формы
     var formData = {

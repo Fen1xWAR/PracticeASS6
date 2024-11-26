@@ -376,12 +376,12 @@ function renderUsersTable(): void
     // Заполнение таблицы данными
     foreach ($result as $row) {
         $fullName = $row['surname'] . " " . substr($row['name'], 0, 2) . "." . substr($row['lastname'], 0, 2) . ".";
-        $table .= "<tr>";
+        $table .= "<tr class='text-center align-middle'>";
         $table .= "<td class='text-center'>" . $row['user_id'] . "</td>";
         $table .= "<td class='text-center'>" . $row['email'] . "</td>";
         $table .= "<td class='text-center'>" . $fullName . "</td>";
         $table .= "<td class='text-center'>" . $row['role'] . "</td>";
-        $table .= "<td class='text-center'><button onclick=openEditModal(".json_encode($row,JSON_UNESCAPED_UNICODE).") class='btn btn-secondary' style='padding: 2px'>Изменить</button></td>";
+        $table .= "<td class='text-center'><button onclick=openEditModal(".json_encode($row,JSON_UNESCAPED_UNICODE).") class='btn btn-outline-primary' style='padding: 5px'>Изменить</button></td>";
         $table .= "</tr>";
     }
 
@@ -436,10 +436,13 @@ function renderUsersTable(): void
               
             </form>
           </div>
-          <div class='modal-footer'>
-            <button type='button' class='btn btn-secondary' data-dismiss='modal'>Закрыть</button>
-            <button type='button' class='btn btn-primary' onclick='saveUserChanges()'>Сохранить изменения</button>
-          </div>
+        <div class='modal-footer  justify-content-between'>
+                <button type='button' class='btn btn-danger' onclick='removeUser()'>Удалить </button>
+                <div>
+                    <button type='button' class='btn btn-secondary' data-dismiss='modal'>Закрыть</button>
+                    <button type='button' class='btn btn-primary' onclick='saveUserChanges()'>Сохранить изменения</button>
+                </div>
+           </div>
         </div>
       </div>
     </div>

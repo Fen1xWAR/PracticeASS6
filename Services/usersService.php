@@ -99,7 +99,20 @@ if (isset($_POST['editUser'])) {
     http_response_code(200);
 
 }
-
+if (isset($_POST['removeUser'])) {
+    global $dbh;
+    $query = $dbh->prepare("SELECT data_id FROM users WHERE user_id = :user_id");
+    $query->bindValue(":user_id", $_POST['removeUser']);
+    $query->execute();
+    $result = $query->fetch();
+    $dataId = $result['data_id'];
+    $query = $dbh->prepare("DELETE FROM users WHERE user_id = :user_id");
+    $query->bindValue(":user_id", $_POST['removeUser']);
+    $query->execute();
+    $query = $dbh->prepare("DELETE FROM human_data WHERE data_id = :data_id");
+    $query->bindValue(":data_id", $dataId);
+    $query->execute();
+}
 if (isset($_POST['login'])) {
 
 

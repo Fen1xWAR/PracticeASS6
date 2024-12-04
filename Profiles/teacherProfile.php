@@ -59,7 +59,6 @@ foreach ($result as $block) {
                         "blockId" : blockId
                 }},
             success: function (data) {
-                console.log(data)
                 const response = JSON.parse(data)
                 if (response['html']) {
 

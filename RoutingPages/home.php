@@ -106,7 +106,6 @@ require_once "Components/footer.php";
     form.submit(function (e) {
         e.preventDefault()
         let formData = form.serializeArray()
-        console.log(formData)
         let data = {
             email: formData[3].value,
             surname: formData[0].value,
@@ -118,7 +117,6 @@ require_once "Components/footer.php";
             url: form.attr('action'),
             data: {"dataToRegisterRedirect": data},
             success: function (data) {
-                console.log(data)
                 form.addClass("was-validated")
                 setTimeout(() => {
                     location.href = "/register"

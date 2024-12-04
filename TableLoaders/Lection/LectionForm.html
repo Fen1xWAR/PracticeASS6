@@ -50,17 +50,14 @@
             blockId: $("#blockId").val(),
             data: JSON.stringify({"Title": $("#title").val(), "Text":  lectureText})
         }
-        console.log(lectureText)
         upload  = data
         $.ajax({
             url: 'LectionLoader.php',
             type: 'POST',
             data: {"component": data},
             success : function (e) {
-                console.log(e)
             },
             error: function (e) {
-                console.log(e)
             }
         })
 

@@ -62,14 +62,11 @@ require_once "Components/footer.php";
             url: "Services/usersService.php",
             data: {"logout": true},
             success: function (data) {
-                // console.log(data)
                 location.href = '/'
 
             },
             error: function (data) {
-                // console.log(data)
-                console.log('An error occurred.');
-                //Сделать всплывашку с ошибкой
+
             },
         });
     })

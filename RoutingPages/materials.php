@@ -1,3 +1,9 @@
+<?php
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] != "teacher") {
+    header("Location: /");
+}
+?>
 <!doctype html>
 <html lang="ru">
 <head>

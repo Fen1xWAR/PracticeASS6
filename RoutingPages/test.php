@@ -93,8 +93,6 @@ require_once "Components/footer.php"
                     questions = componentData['questions'];
                     userAnswers = new Array(questions.length).fill('')
                 }
-
-                // console.log(componentData["questions"])
                 if (componentData['html']) {
                     $container.html(componentData['html']);
                     $header.text(componentData["header"]);

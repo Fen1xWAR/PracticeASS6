@@ -27,8 +27,6 @@ function Notification(text, duration = 2000, root='.toast-container') {
     }
 }
 function ajaxErrorHandling(xhr) {
-    console.log(xhr);
-    console.error(xhr.responseText)
     const errorMessage = JSON.parse(xhr.responseText).message;
     Notification(errorMessage).show();
 
@@ -50,6 +48,7 @@ function setDefaultPassword() {
 }
 
 function removeUser() {
+
     let userId = $('#userId').val()
     $.ajax({
         type: "post",
@@ -77,7 +76,6 @@ function saveUserChanges() {
         userLastname: $('#userLastname').val(),
         userRole: $('#userRole').val(),
     };
-    console.log(formData)
 
     $.ajax({
         type: "post",

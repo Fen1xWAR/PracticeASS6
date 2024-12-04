@@ -1,0 +1,14 @@
+{
+  "name": "practiceass6",
+  "version": "1.0.0",
+  "main": "jquery-3.7.1.js",
+  "scripts": {
+    "min-js" : "terser script.js -o script.min.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "terser": "^5.36.0"
+  }
+}

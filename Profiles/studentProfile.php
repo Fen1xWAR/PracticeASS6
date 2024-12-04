@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<script src="../script.js"></script>
+<script src="../script.min.js"></script>
 <script src="../jquery-3.7.1.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

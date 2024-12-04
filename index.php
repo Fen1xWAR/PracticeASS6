@@ -1,7 +1,7 @@
 
 <link rel="icon" type="image/x-icon" href="assets/StockImg/favicon.ico">
 <link rel="stylesheet" href="bootstrap-5.3.3/bootstrap-5.3.3/css/bootstrap.css">
-<script src="script.js"></script>
+<script src="script.min.js"></script>
 
 <?php
 require_once "Services/pdoConnection.php";
